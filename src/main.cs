@@ -8,6 +8,14 @@ class Program
 
             var command = Console.ReadLine();
 
+            switch (command)
+            {
+                case "exit":
+                    return;
+                default:
+                    break;
+            }
+
             Console.WriteLine($"{command}: command not found");
         }
 
