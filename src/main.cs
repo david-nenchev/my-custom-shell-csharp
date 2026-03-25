@@ -3,6 +3,11 @@ class Program
     static void Main()
     {
 
-         Console.Write("$ ");
+        Console.Write("$ ");
+
+        var command = Console.ReadLine();
+
+        Console.WriteLine($"{command}: command not found");
+
     }
 }
