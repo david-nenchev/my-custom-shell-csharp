@@ -6,26 +6,23 @@ class Program
         {
             Console.Write("$ ");
 
-            //var command = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? [];
+            var command = Console.ReadLine();
 
-            //foreach (var commandItem in command)
-            //{
-            //    switch (commandItem)
-            //    {
-            //        case "exit":
-            //            return;
-            //        default:
-            //            break;
-            //    }
-            //}
+            switch (command)
+            {
+                case "exit":
+                    return;
+                case "echo":
+                    var restOfCommand = command.Split([" ", "echo"], StringSplitOptions.RemoveEmptyEntries) ?? [];
+                    Console.WriteLine(restOfCommand);
+                    break;
+                default:
+                    break;
+            }
 
 
 
-            //Console.WriteLine($"{command}: command not found");
-
-            var command = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? [];
-
-            Console.WriteLine(string.Join(" ", command));
+            Console.WriteLine($"{command}: command not found");
         }
 
     }
