@@ -6,15 +6,20 @@ class Program
         {
             Console.Write("$ ");
 
-            var command = Console.ReadLine();
+            var command = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? [];
 
-            switch (command)
+            foreach (var commandItem in command)
             {
-                case "exit":
-                    return;
-                default:
-                    break;
+                switch (commandItem)
+                {
+                    case "exit":
+                        return;
+                    default:
+                        break;
+                }
             }
+
+      
 
             Console.WriteLine($"{command}: command not found");
         }
