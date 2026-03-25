@@ -2,25 +2,55 @@ class Program
 {
     static void Main()
     {
+        var shellBuiltIn = "is a shell builtin";
         while (true)
         {
             Console.Write("$ ");
 
-            var parsedText = Console.ReadLine().Split([" "], StringSplitOptions.RemoveEmptyEntries);
-            var command = parsedText.FirstOrDefault();
-            var arguments = string.Join(" ", parsedText[1..]);
+            var commandQuene = new Queue<string>(Console.ReadLine().Split([" "], StringSplitOptions.RemoveEmptyEntries));
+            //var command = parsedText.FirstOrDefault();
+            //var arguments = string.Join(" ", parsedText[1..]);
+            string prevCommand = null;
 
-            switch (command)
+
+            while (commandQuene.Count > 0)
             {
-                case "exit":
-                    return;
-                case "echo":
-                    Console.WriteLine(arguments);
-                    break;
-                default:
-                    Console.WriteLine($"{command}: command not found");
-                    break;
+               
+                var command = commandQuene.Dequeue();
+
+                switch (command)
+                {
+                    case "exit":
+                        if (prevCommand == "type")
+                        {
+                            Console.WriteLine($"{command} {shellBuiltIn}");
+                            break;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    case "echo":
+                        if (prevCommand == "type")
+                        {
+                            Console.WriteLine($"{command} {shellBuiltIn}");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine(string.Join(" ", commandQuene));
+                            break;
+                        }
+                    case "type":
+                        prevCommand = "type";
+                        break;
+                    default:
+                        Console.WriteLine($"{command}: command not found");
+                        break;
+                }
             }
+
+         
         }
 
     }
