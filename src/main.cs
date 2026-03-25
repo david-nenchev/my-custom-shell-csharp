@@ -6,23 +6,21 @@ class Program
         {
             Console.Write("$ ");
 
-            var command = Console.ReadLine();
+            var parsedText = Console.ReadLine().Split([" "], StringSplitOptions.RemoveEmptyEntries);
+            var command = parsedText.FirstOrDefault();
+            var arguments = string.Join(" ", parsedText[1..]);
 
             switch (command)
             {
                 case "exit":
                     return;
                 case "echo":
-                    var restOfCommand = command.Split([" ", "echo"], StringSplitOptions.RemoveEmptyEntries) ?? [];
-                    Console.WriteLine(restOfCommand);
+                    Console.WriteLine(arguments);
                     break;
                 default:
+                    Console.WriteLine($"{command}: command not found");
                     break;
             }
-
-
-
-            Console.WriteLine($"{command}: command not found");
         }
 
     }
