@@ -24,6 +24,7 @@ class Program
                         if (prevCommand == "type")
                         {
                             Console.WriteLine($"{command} {shellBuiltIn}");
+                            prevCommand = null;
                             break;
                         }
                         else
@@ -34,6 +35,7 @@ class Program
                         if (prevCommand == "type")
                         {
                             Console.WriteLine($"{command} {shellBuiltIn}");
+                            prevCommand = null;
                             break;
                         }
                         else
@@ -42,8 +44,17 @@ class Program
                             break;
                         }
                     case "type":
-                        prevCommand = "type";
-                        break;
+                        if (prevCommand == "type") 
+                        {
+                            Console.WriteLine($"{command} {shellBuiltIn}");
+                            prevCommand = null;
+                            break;
+                        }
+                        else
+                        {
+                            prevCommand = "type";
+                            break;
+                        }
                     default:
                         Console.WriteLine($"{command}: command not found");
                         break;
