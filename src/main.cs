@@ -4,7 +4,7 @@ class Program
     {
         while (true)
         {
-            //Console.Write("$ ");
+            Console.Write("$ ");
 
             //var command = Console.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries) ?? [];
 
