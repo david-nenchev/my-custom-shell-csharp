@@ -30,20 +30,20 @@ class Program
                     }
                     else
                     {
-                        string root = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-                        var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
-                       
                         var executableMatch = false;
-
-                        foreach(var fileMatch in fileMatches)
+                        string root = Directory.GetCurrentDirectory();
+                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                        foreach(var path in paths)
                         {
-                            if (!string.IsNullOrEmpty(fileMatch))
+                            var fullPath = Path.Combine(root, path);
+                            var fileExists = File.Exists(fullPath);
+                            if (fileExists)
                             {
-                                var canExecute = CanExecute(fileMatch);
+                                var canExecute = CanExecute(fullPath);
 
                                 if (canExecute)
                                 {
-                                    Console.WriteLine($"{argument} is {fileMatch}");
+                                    Console.WriteLine($"{argument} is {path}");
                                     executableMatch = true;
                                 }
                             }
