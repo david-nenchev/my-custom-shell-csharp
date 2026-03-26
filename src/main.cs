@@ -30,7 +30,7 @@ class Program
                     }
                     else
                     {
-                        string root = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));
+                        string root = Directory.GetCurrentDirectory();
                         var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
 
                         foreach(var fileMatch in fileMatches)
