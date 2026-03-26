@@ -5,6 +5,13 @@ class Program
 {
     static void Main()
     {
+        string root = Directory.GetCurrentDirectory();
+
+        foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        {
+            Console.WriteLine(file);
+        }
+
         while (true)
         {
             Console.Write("$ ");
