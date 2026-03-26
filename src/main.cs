@@ -49,6 +49,7 @@ class Program
                 default:
 
                     var executablePath = FindExecutable(command);
+                    Console.WriteLine(executablePath);
 
                     if (executablePath != null)
                     {
@@ -101,7 +102,7 @@ class Program
     static string? FindExecutable(string name)
     {
         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-        Console.WriteLine(string.Join(" ", paths));
+       
 
         foreach (var path in paths)
         {
