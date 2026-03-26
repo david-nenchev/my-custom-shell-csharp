@@ -36,7 +36,7 @@ class Program
 
                         if (typeFileInfo != null)
                         {
-                            Console.WriteLine($"{arguments} is {typeFileInfo.Directory.FullName}");
+                            Console.WriteLine($"{arguments} is {Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name)}");
                         }
                         else
                         {
