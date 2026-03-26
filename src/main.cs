@@ -31,7 +31,6 @@ class Program
                     else
                     {
                         var executableMatch = false;
-                        string root = Directory.GetCurrentDirectory();
 
                         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
                         foreach(var path in paths)
