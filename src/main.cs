@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -8,7 +9,7 @@ class Program
         string root = Directory.GetCurrentDirectory();
 
         // Split PATH into directories
-        string[] pathDirs = pathEnv.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+        string[] pathDirs = Environment.GetEnvironmentVariable("PATH").Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var dir in pathDirs)
         {
