@@ -15,8 +15,6 @@ class Program
             var commandQuene = new Queue<string>(Console.ReadLine().Split([" "], StringSplitOptions.RemoveEmptyEntries));
             string[] shellCommands = { "exit", "echo", "type" };
 
-
-
             var command = commandQuene.Dequeue();
             var arguments = string.Join(" ", commandQuene);
 
@@ -49,7 +47,6 @@ class Program
                 default:
 
                     var executablePath = FindExecutable(command);
-                    Console.WriteLine(executablePath);
 
                     if (executablePath != null)
                     {
@@ -61,7 +58,7 @@ class Program
                             WorkingDirectory = executablePath
                         };
 
-                        Process process = Process.Start(startInfo);
+                        //Process process = Process.Start(startInfo);
                     }
                     else
                     {
