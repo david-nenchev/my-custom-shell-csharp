@@ -101,7 +101,7 @@ class Program
     static string? FindExecutable(string name)
     {
         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-        Console.WriteLine(paths);
+        Console.WriteLine(string.Join(" ", paths));
 
         foreach (var path in paths)
         {
