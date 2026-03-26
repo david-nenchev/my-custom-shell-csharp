@@ -32,15 +32,15 @@ class Program
                     {
                         var executableMatch = false;
                         string root = Directory.GetCurrentDirectory();
-                        foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
-                        {
-                            Console.WriteLine(file);
-                        }
+                        //foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+                        //{
+                        //    Console.WriteLine(file);
+                        //}
 
-                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
                         foreach(var path in paths)
                         {
-                            var fullPath = root + path;
+                            var fullPath = Path.Combine(path, argument);
                             var fileExists = File.Exists(fullPath);
                             if (fileExists)
                             {
