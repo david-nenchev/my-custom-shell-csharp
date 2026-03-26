@@ -37,7 +37,7 @@ class Program
                         {
                             var fullPath = root + path;
                             Console.WriteLine(fullPath);
-                            var fileExists = File.Exists(path);
+                            var fileExists = File.Exists(fullPath);
                             if (fileExists)
                             {
                                 var canExecute = CanExecute(fullPath);
