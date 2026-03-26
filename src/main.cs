@@ -52,9 +52,8 @@ class Program
                     {
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            FileName = command,
+                            FileName = executablePath,
                             UseShellExecute = true,  // needed to open non-exe files too
-                            WorkingDirectory = executablePath,
                         };
                     
                         foreach(var argument in commandQuene)
