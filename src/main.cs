@@ -7,9 +7,23 @@ class Program
     {
         string root = Directory.GetCurrentDirectory();
 
-        foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        // Split PATH into directories
+        string[] pathDirs = pathEnv.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var dir in pathDirs)
         {
-            Console.WriteLine(file);
+            try
+            {
+                if (Directory.Exists(dir))
+                {
+                    foreach (var file in Directory.GetFiles(dir))
+                    {
+                        Console.WriteLine(file); // full path of each file
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException) { } // skip directories we can't access
+            catch (DirectoryNotFoundException) { }   // skip invalid paths
         }
 
         while (true)
