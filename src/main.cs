@@ -32,10 +32,6 @@ class Program
                     {
                         var executableMatch = false;
                         string root = Directory.GetCurrentDirectory();
-                        //foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
-                        //{
-                        //    Console.WriteLine(file);
-                        //}
 
                         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
                         foreach(var path in paths)
@@ -48,7 +44,7 @@ class Program
 
                                 if (canExecute)
                                 {
-                                    Console.WriteLine($"{argument} is {path}");
+                                    Console.WriteLine($"{argument} is {fullPath}");
                                     executableMatch = true;
                                 }
                             }
