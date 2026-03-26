@@ -58,8 +58,11 @@ class Program
                             WorkingDirectory = executablePath
                         };
 
-                        Process process = Process.Start(startInfo);
-                       
+                        using (Process process = Process.Start(startInfo)!)
+                        {
+                            process.WaitForExit();
+                        }
+
                     }
                     else
                     {
