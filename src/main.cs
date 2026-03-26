@@ -56,7 +56,7 @@ class Program
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = command,
-                            Arguments = command + arguments,  // pass the arguments here
+                            Arguments = arguments,  // pass the arguments here
                             UseShellExecute = true,  // needed to open non-exe files too
                             WorkingDirectory = executablePath
                         };
