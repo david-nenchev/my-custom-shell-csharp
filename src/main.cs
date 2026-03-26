@@ -6,26 +6,7 @@ class Program
 {
     static void Main()
     {
-        string root = Directory.GetCurrentDirectory();
 
-        // Split PATH into directories
-        string[] pathDirs = Environment.GetEnvironmentVariable("PATH").Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (var dir in pathDirs)
-        {
-            try
-            {
-                if (Directory.Exists(dir))
-                {
-                    foreach (var file in Directory.GetFiles(dir))
-                    {
-                        Console.WriteLine(file); // full path of each file
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException) { } // skip directories we can't access
-            catch (DirectoryNotFoundException) { }   // skip invalid paths
-        }
 
         while (true)
         {
@@ -120,6 +101,7 @@ class Program
     static string? FindExecutable(string name)
     {
         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+        Console.WriteLine(paths);
 
         foreach (var path in paths)
         {
