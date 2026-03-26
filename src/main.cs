@@ -1,29 +1,8 @@
-using System;
 using System.Diagnostics;
-using System.Reflection;
-using System.Security.Cryptography;
-using static ShellCommands;
-using static StringHelpers;
-
-
-static class ShellCommands
-{
-    public const string EXIT = "exit";
-    public const string ECHO = "echo";
-    public const string TYPE = "type";
-    public static readonly string[] shellCommands = { EXIT, ECHO, TYPE };
-}
-
-static class StringHelpers
-{
-    public const string SPACE = " ";
-    public const string PROMPT = "$ ";
-    public const string SHELL_BUILTIN_TEMPLATE = "{0} is a shell builtin";
-    public const string FILE_LOCATION_TEMPLATE = "{0} is {1}";
-    public const string NOT_FOUND_TEMPLATE = "{0}: not found";
-    public const string COMMAND_NOT_FOUND_TEMPLATE = "{0}: command not found";
-    public const string PATH_ENV_VAR = "PATH";
-}
+using static codecrafters.helpers.ShellCommands;
+using static codecrafters.helpers.StringHelpers;
+using static codecrafters.helpers.UtilityHelpers;
+using static codecrafters.helpers.FileHelpers;
 
 class Program
 {
@@ -33,22 +12,22 @@ class Program
         {
             Console.Write(PROMPT);
 
-            var commandQuene = new Queue<string>(Console.ReadLine().Split([SPACE], StringSplitOptions.RemoveEmptyEntries));
+            var command = new Queue<string>(Console.ReadLine().Split([SPACE], StringSplitOptions.RemoveEmptyEntries));
 
-            var command = commandQuene.Dequeue();
-            var arguments = string.Join(SPACE, commandQuene);
+            var firstLevelCommand = command.Dequeue();
+            var arguments = string.Join(SPACE, command);
 
-            switch (command)
+            switch (firstLevelCommand)
             {
                 case EXIT:
                     return;
                 case ECHO:
-                    Console.WriteLine(string.Join(SPACE, commandQuene));
+                    ToOutput(string.Join(SPACE, command));
                     break;
                 case TYPE:
                     if (shellCommands.Contains(arguments))
                     {
-                        Console.WriteLine(string.Format(SHELL_BUILTIN_TEMPLATE, arguments));
+                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments));
                     }
                     else
                     {
@@ -56,17 +35,17 @@ class Program
 
                         if (typeFileInfo != null)
                         {
-                            Console.WriteLine(string.Format(FILE_LOCATION_TEMPLATE, arguments, Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name)));
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name)));
                         }
                         else
                         {
-                            Console.WriteLine(string.Format(NOT_FOUND_TEMPLATE, arguments));
+                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments));
                         }
                     }
                     break;
                 default:
 
-                    var fileInfo = FindExecutable(command);
+                    var fileInfo = FindExecutable(firstLevelCommand);
 
                     if (fileInfo != null)
                     {
@@ -85,62 +64,11 @@ class Program
                     }
                     else
                     {
-                        Console.WriteLine(string.Format(COMMAND_NOT_FOUND_TEMPLATE, command));
+                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand));
                     }
                     break;
             }
         }
 
-    }
-
-    static bool CanExecute(string path)
-    {
-        try
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = path,
-                    UseShellExecute = false
-                }
-            };
-
-            process.Start();
-            process.Kill(); // stop immediately
-            return true;
-        }
-        catch (System.ComponentModel.Win32Exception)
-        {
-            return false; // no permission or not executable
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    static FileInfo FindExecutable(string name)
-    {
-        var paths = Environment.GetEnvironmentVariable(PATH_ENV_VAR)?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-       
-
-        foreach (var path in paths)
-        {
-            var fullPath = Path.Combine(path, name);
-            var fileExists = File.Exists(fullPath);
-            if (fileExists)
-            {
-                var canExecute = CanExecute(fullPath);
-
-                if (canExecute)
-                {
-                    
-                    return new FileInfo(fullPath);
-                }
-            }
-        }
-
-        return null;
     }
 }
