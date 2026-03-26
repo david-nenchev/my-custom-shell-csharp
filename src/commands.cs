@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace codecrafters-shell.src
+namespace codecrafters.commands
 {
-    internal class commands
-{
-}
+  public static class Commands
+  {
+    
+  }
 }

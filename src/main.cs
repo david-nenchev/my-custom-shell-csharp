@@ -1,8 +1,9 @@
 using System.Diagnostics;
-using static ShellCommands;
-using static StringHelpers;
-using static UtilityHelpers;
-using static FileHelpers;
+using System.Diagnostics;
+using static codecrafters.helpers.ShellCommands;
+using static codecrafters.helpers.StringHelpers;
+using static codecrafters.helpers.UtilityHelpers;
+using static codecrafters.helpers.FileHelpers;
 
 class Program
 {
