@@ -33,6 +33,7 @@ class Program
                         var executableMatch = false;
 
                         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+
                         foreach(var path in paths)
                         {
                             var fullPath = Path.Combine(path, argument);
