@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 
 class Program
 {
@@ -14,7 +15,7 @@ class Program
 
 
             var command = commandQuene.Dequeue();
-            var argument = string.Join(" ", commandQuene);
+            var arguments = string.Join(" ", commandQuene);
 
             switch (command)
             {
@@ -24,40 +25,43 @@ class Program
                     Console.WriteLine(string.Join(" ", commandQuene));
                     break;
                 case "type":
-                    if (shellCommands.Contains(argument))
+                    if (shellCommands.Contains(arguments))
                     {
-                        Console.WriteLine($"{argument} is a shell builtin");
+                        Console.WriteLine($"{arguments} is a shell builtin");
                     }
                     else
                     {
-                        var executableMatch = false;
+                        var executableTypePath = FindExecutable(arguments);
 
-                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach(var path in paths)
+                        if (executableTypePath != null)
                         {
-                            var fullPath = Path.Combine(path, argument);
-                            var fileExists = File.Exists(fullPath);
-                            if (fileExists)
-                            {
-                                var canExecute = CanExecute(fullPath);
-
-                                if (canExecute)
-                                {
-                                    Console.WriteLine($"{argument} is {fullPath}");
-                                    executableMatch = true;
-                                }
-                            }
+                            Console.WriteLine($"{arguments} is {executableTypePath}");
                         }
-
-                        if (!executableMatch)
+                        else
                         {
-                            Console.WriteLine($"{argument}: not found");
+                            Console.WriteLine($"{arguments}: not found");
                         }
                     }
                     break;
                 default:
-                    Console.WriteLine($"{command}: command not found");
+
+                    var executablePath = FindExecutable(command);
+
+                    if (executablePath != null)
+                    {
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = executablePath,
+                            Arguments = arguments,  // pass the arguments here
+                            UseShellExecute = true  // needed to open non-exe files too
+                        };
+
+                        Process process = Process.Start(startInfo);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{command}: command not found");
+                    }
                     break;
             }
         }
@@ -89,5 +93,27 @@ class Program
         {
             return false;
         }
+    }
+
+    static string? FindExecutable(string name)
+    {
+        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var path in paths)
+        {
+            var fullPath = Path.Combine(path, name);
+            var fileExists = File.Exists(fullPath);
+            if (fileExists)
+            {
+                var canExecute = CanExecute(fullPath);
+
+                if (canExecute)
+                {
+                    return path;
+                }
+            }
+        }
+
+        return null;
     }
 }
