@@ -32,11 +32,11 @@ class Program
                     }
                     else
                     {
-                        var executableTypePath = FindExecutable(arguments);
+                        var typeFileInfo = FindExecutable(arguments);
 
-                        if (executableTypePath != null)
+                        if (typeFileInfo != null)
                         {
-                            Console.WriteLine($"{arguments} is {executableTypePath}");
+                            Console.WriteLine($"{arguments} is {typeFileInfo.Directory.FullName}");
                         }
                         else
                         {
@@ -46,13 +46,13 @@ class Program
                     break;
                 default:
 
-                    var executablePath = FindExecutable(command);
+                    var fileInfo = FindExecutable(command);
 
-                    if (executablePath != null)
+                    if (fileInfo != null)
                     {
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            FileName = executablePath,
+                            FileName = fileInfo.Name,
                             UseShellExecute = true,  // needed to open non-exe files too
                             Arguments = arguments
                         };
@@ -106,7 +106,7 @@ class Program
         }
     }
 
-    static string? FindExecutable(string name)
+    static FileInfo FindExecutable(string name)
     {
         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
        
@@ -121,7 +121,8 @@ class Program
 
                 if (canExecute)
                 {
-                    return fullPath;
+                    
+                    return new FileInfo(fullPath);
                 }
             }
         }
