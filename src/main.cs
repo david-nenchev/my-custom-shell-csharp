@@ -31,8 +31,9 @@ class Program
                     else
                     {
                         string root = Directory.GetCurrentDirectory();
+                        Console.WriteLine(root);
                         var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
-                        Console.WriteLine(fileMatches.Count());
+                       
                         var executableMatch = false;
 
                         foreach(var fileMatch in fileMatches)
