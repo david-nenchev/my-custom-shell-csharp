@@ -36,7 +36,6 @@ class Program
                         foreach(var path in paths)
                         {
                             var fullPath = root + path;
-                            Console.WriteLine(fullPath);
                             var fileExists = File.Exists(fullPath);
                             if (fileExists)
                             {
