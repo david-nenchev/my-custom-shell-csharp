@@ -32,7 +32,7 @@ class Program
                     {
                         string root = Directory.GetCurrentDirectory();
                         var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
-                        Console.WriteLine(fileMatches);
+                        Console.WriteLine(fileMatches.Count());
                         var executableMatch = false;
 
                         foreach(var fileMatch in fileMatches)
