@@ -57,12 +57,6 @@ class Program
                             Arguments = arguments
                         };
 
-                    
-                        //foreach(var argument in commandQuene)
-                        //{
-                        //    startInfo.ArgumentList.Add(argument);
-                        //}
-
                         using (Process process = Process.Start(startInfo)!)
                         {
                             process.WaitForExit();
