@@ -37,7 +37,7 @@ class Program
                             Console.WriteLine(file);
                         }
 
-                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
                         foreach(var path in paths)
                         {
                             var fullPath = root + path;
