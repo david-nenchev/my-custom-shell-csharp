@@ -59,6 +59,7 @@ class Program
                         };
 
                         Process process = Process.Start(startInfo);
+                        process.WaitForExit();
                     }
                     else
                     {
