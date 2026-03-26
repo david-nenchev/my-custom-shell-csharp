@@ -12,7 +12,9 @@ class Program
         {
             Console.Write(PROMPT);
 
-            var command = new Queue<string>(Console.ReadLine().Split([SPACE], StringSplitOptions.RemoveEmptyEntries));
+            var consoleInput = Console.ReadLine()?.Trim();
+            var parsedInput = consoleInput?.Split([SPACE], StringSplitOptions.RemoveEmptyEntries) ?? [];
+            var command = new Queue<string>(parsedInput);
 
             var firstLevelCommand = command.Dequeue();
             var arguments = string.Join(SPACE, command);
@@ -56,10 +58,8 @@ class Program
                             Arguments = arguments
                         };
 
-                        using (Process process = Process.Start(startInfo)!)
-                        {
-                            process.WaitForExit();
-                        }
+                        using Process process = Process.Start(startInfo)!;
+                        process.WaitForExit();
 
                     }
                     else
