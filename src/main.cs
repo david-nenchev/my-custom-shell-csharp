@@ -55,12 +55,13 @@ class Program
                             FileName = executablePath,
                             UseShellExecute = true,  // needed to open non-exe files too
                         };
+
+                        startInfo.ArgumentList.Add(command);
                     
                         foreach(var argument in commandQuene)
                         {
                             startInfo.ArgumentList.Add(argument);
                         }
-                    
 
                         using (Process process = Process.Start(startInfo)!)
                         {
