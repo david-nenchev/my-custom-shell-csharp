@@ -36,7 +36,7 @@ class Program
                         foreach(var path in paths)
                         {
                             var fullPath = Path.Combine(root, path);
-                            Console.WriteLine(root);
+                            Console.WriteLine(fullPath);
                             var fileExists = File.Exists(path);
                             if (fileExists)
                             {
