@@ -58,7 +58,7 @@ class Program
                             WorkingDirectory = executablePath
                         };
 
-                        //Process process = Process.Start(startInfo);
+                        Process process = Process.Start(startInfo);
                     }
                     else
                     {
