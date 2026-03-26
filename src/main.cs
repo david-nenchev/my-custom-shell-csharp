@@ -35,7 +35,7 @@ class Program
                         var paths = Environment.GetEnvironmentVariable("PATH")?.Split(":", StringSplitOptions.RemoveEmptyEntries);
                         foreach(var path in paths)
                         {
-                            var fullPath = Path.Combine(root, path);
+                            var fullPath = root + path;
                             Console.WriteLine(fullPath);
                             var fileExists = File.Exists(path);
                             if (fileExists)
