@@ -58,10 +58,10 @@ class Program
                         };
 
                     
-                        foreach(var argument in commandQuene)
-                        {
-                            startInfo.ArgumentList.Add(argument);
-                        }
+                        //foreach(var argument in commandQuene)
+                        //{
+                        //    startInfo.ArgumentList.Add(argument);
+                        //}
 
                         using (Process process = Process.Start(startInfo)!)
                         {
