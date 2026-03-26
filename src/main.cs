@@ -53,10 +53,15 @@ class Program
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = command,
-                            Arguments = arguments,  // pass the arguments here
                             UseShellExecute = true,  // needed to open non-exe files too
-                            WorkingDirectory = executablePath
+                            WorkingDirectory = executablePath,
                         };
+                    
+                        foreach(var argument in commandQuene)
+                        {
+                            startInfo.ArgumentList.Add(argument);
+                        }
+                    
 
                         using (Process process = Process.Start(startInfo)!)
                         {
