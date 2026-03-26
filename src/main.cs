@@ -54,6 +54,7 @@ class Program
                         {
                             FileName = executablePath,
                             UseShellExecute = true,  // needed to open non-exe files too
+                            Arguments = arguments
                         };
 
                     
