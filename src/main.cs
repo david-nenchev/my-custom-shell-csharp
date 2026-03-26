@@ -52,7 +52,7 @@ class Program
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = executablePath,
-                            Arguments = arguments,  // pass the arguments here
+                            Arguments = command + arguments,  // pass the arguments here
                             UseShellExecute = true  // needed to open non-exe files too
                         };
 
