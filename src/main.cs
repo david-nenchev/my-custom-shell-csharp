@@ -30,8 +30,7 @@ class Program
                     }
                     else
                     {
-                        string root = Directory.GetCurrentDirectory();
-                        Console.WriteLine(root);
+                        string root = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
                         var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
                        
                         var executableMatch = false;
