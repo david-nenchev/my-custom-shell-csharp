@@ -56,7 +56,7 @@ class Program
                             UseShellExecute = true,  // needed to open non-exe files too
                         };
 
-                        startInfo.ArgumentList.Add(executablePath);
+                        startInfo.ArgumentList.Add(command);
                     
                         foreach(var argument in commandQuene)
                         {
