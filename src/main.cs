@@ -121,7 +121,7 @@ class Program
 
                 if (canExecute)
                 {
-                    return path;
+                    return fullPath;
                 }
             }
         }
