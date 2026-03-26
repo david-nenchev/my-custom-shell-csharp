@@ -11,6 +11,7 @@ static class ShellCommands
     public const string EXIT = "exit";
     public const string ECHO = "echo";
     public const string TYPE = "type";
+    public static readonly string[] shellCommands = { EXIT, ECHO, TYPE };
 }
 
 static class StringHelpers
@@ -28,14 +29,11 @@ class Program
 {
     static void Main()
     {
-
-
         while (true)
         {
             Console.Write(PROMPT);
 
             var commandQuene = new Queue<string>(Console.ReadLine().Split([SPACE], StringSplitOptions.RemoveEmptyEntries));
-            string[] shellCommands = { EXIT, ECHO, TYPE };
 
             var command = commandQuene.Dequeue();
             var arguments = string.Join(SPACE, commandQuene);
