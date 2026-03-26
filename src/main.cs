@@ -32,6 +32,7 @@ class Program
                     {
                         string root = Directory.GetCurrentDirectory();
                         var fileMatches = Directory.EnumerateFiles(root, argument + ".*", SearchOption.AllDirectories);
+                        var executableMatch = false;
 
                         foreach(var fileMatch in fileMatches)
                         {
@@ -42,12 +43,14 @@ class Program
                                 if (canExecute)
                                 {
                                     Console.WriteLine($"{argument} is {fileMatch}");
+                                    executableMatch = true;
                                 }
                             }
-                            else
-                            {
-                                Console.WriteLine($"{argument}: not found");
-                            }
+                        }
+
+                        if (!executableMatch)
+                        {
+                            Console.WriteLine($"{argument}: not found");
                         }
                     }
                     break;
