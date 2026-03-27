@@ -7,8 +7,10 @@
             public const string ECHO = "echo";
             public const string TYPE = "type";
             public const string PWD = "pwd";
+            public const string CD = "cd";
             public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
         }
+
         static class StringHelpers
         {
             public const string SPACE = " ";
@@ -19,6 +21,7 @@
             public const string COMMAND_NOT_FOUND_TEMPLATE = "{0}: command not found";
             public const string PATH_ENV_VAR = "PATH";
         }
+
         static class UtilityHelpers
         {
             public static void ToOutput(string message)
@@ -27,7 +30,12 @@
             }
         }
 
-        public static class FileHelpers
+        static class Patterns
+        {
+            public const string PATH_VALIDATE_PATTERN = @"^(~|\/|\.{1,2})(\/[A-Za-z0-9._-]+)*\/?$";
+        }
+
+        static class FileHelpers
         {
             public static bool CanExecute(string path)
             {
@@ -83,6 +91,6 @@
             public static string GetPathEnvVarValue()
             {
                 return Environment.GetEnvironmentVariable(StringHelpers.PATH_ENV_VAR);
-        }
+            }
         }
     }
