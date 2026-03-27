@@ -56,9 +56,7 @@ class Program
                     break;
                 case CD:
                     var potentialNewDirectoryPath = arguments;
-                    bool isValid = Regex.IsMatch(potentialNewDirectoryPath, PATH_VALIDATE_PATTERN);
-                    if (isValid)
-                    {
+                    
                         bool exists = Directory.Exists(potentialNewDirectoryPath);
                         
                         if (exists)
@@ -66,7 +64,7 @@ class Program
                             shellCurrentDirectory = potentialNewDirectoryPath;
                             break;
                         }
-                    }
+                    
 
                     ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, potentialNewDirectoryPath));
                     break;
@@ -79,7 +77,7 @@ class Program
                         {
                             FileName = fileInfo.Name,
                             UseShellExecute = true,  // needed to open non-exe files too
-                            Arguments = arguments 
+                            Arguments = arguments
                         };
 
                         using Process process = Process.Start(startInfo)!;
