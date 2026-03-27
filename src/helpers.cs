@@ -7,7 +7,7 @@
             public const string ECHO = "echo";
             public const string TYPE = "type";
             public const string PWD = "pwd";
-            public static readonly string[] shellCommands = { EXIT, ECHO, TYPE };
+            public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
         }
         static class StringHelpers
         {
