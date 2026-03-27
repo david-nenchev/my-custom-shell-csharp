@@ -17,10 +17,7 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var parsedInput = Regex.Matches(consoleInput, @"'[^']*'|\S+")
-                .Select(m => m.Value)
-                .Select(s => s.Trim('\''))
-                .ToArray();
+            var parsedInput = ParseShellCommand(consoleInput ?? string.Empty);
             var command = new Queue<string>(parsedInput);
 
             var firstLevelCommand = command.Dequeue();

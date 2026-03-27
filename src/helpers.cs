@@ -99,11 +99,6 @@ namespace codecrafters.helpers
         }
     }
 
-    static class Patterns
-    {
-        public const string PATH_VALIDATE_PATTERN = @"^(~(\/[A-Za-z0-9._-]+)*\/?|\/([A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*)?\/?|\.{1,2}(\/[A-Za-z0-9._-]+)*\/?)$";
-    }
-
     static class FileHelpers
     {
         public static bool CanExecute(string path)
