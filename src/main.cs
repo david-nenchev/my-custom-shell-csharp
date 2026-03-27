@@ -9,6 +9,7 @@ class Program
     static void Main()
     {
         var shellCurrentDirectory = Directory.GetCurrentDirectory();
+        var homeDirectory = GetEnvVariableValue(HOME_ENV_VAR);
 
         while (true)
         {
@@ -55,6 +56,11 @@ class Program
                     var potentialNewDirectoryPath = arguments;
 
                     bool isAbsolute = Path.IsPathRooted(potentialNewDirectoryPath);
+
+                    if (potentialNewDirectoryPath.Contains('~'))
+                    {
+                        potentialNewDirectoryPath = potentialNewDirectoryPath.Replace("~", homeDirectory);
+                    }
 
                     if(!isAbsolute)
                     {
