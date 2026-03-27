@@ -61,7 +61,7 @@ class Program
 
                     if(!isAbsolute)
                     {
-                        potentialNewDirectoryPath = Path.GetFullPath(potentialNewDirectoryPath, shellCurrentDirectory);
+                        potentialNewDirectoryPath = NormalizePath(Path.GetFullPath(potentialNewDirectoryPath, shellCurrentDirectory));
                     }
 
                     var exists = Directory.Exists(potentialNewDirectoryPath);

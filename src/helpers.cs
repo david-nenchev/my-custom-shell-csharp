@@ -29,7 +29,16 @@
             {
                 Console.WriteLine(message);
             }
+
+        string NormalizePath(string path)
+        {
+            if (path.Length > 1 && path.EndsWith(Path.DirectorySeparatorChar))
+            {
+                return path.TrimEnd(Path.DirectorySeparatorChar);
+            }
+            return path;
         }
+    }
 
         static class Patterns
         {
