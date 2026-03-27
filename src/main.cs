@@ -60,6 +60,7 @@ class Program
                     {
                         bool exists = Directory.Exists(potentialNewDirectoryPath);
 
+                        Console.WriteLine("|");
                         if (exists)
                         {
                             shellCurrentDirectory = potentialNewDirectoryPath;
