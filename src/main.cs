@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using static codecrafters.helpers.FileHelpers;
 using static codecrafters.helpers.Patterns;
@@ -59,13 +60,15 @@ class Program
                     if (isValid)
                     {
                         bool exists = Directory.Exists(potentialNewDirectoryPath);
-
                         
                         if (exists)
                         {
                             shellCurrentDirectory = potentialNewDirectoryPath;
+                            break;
                         }
                     }
+
+                    ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, potentialNewDirectoryPath));
                     break;
                 default:
                     var fileInfo = FindExecutable(firstLevelCommand);
