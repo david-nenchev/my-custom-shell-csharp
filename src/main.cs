@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using static codecrafters.helpers.FileHelpers;
 using static codecrafters.helpers.ShellCommands;
 using static codecrafters.helpers.StringHelpers;
@@ -16,7 +17,10 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var parsedInput = consoleInput?.Split([SPACE], StringSplitOptions.RemoveEmptyEntries) ?? [];
+            var parsedInput = Regex.Matches(consoleInput, @"'[^']*'|\S+")
+                .Select(m => m.Value)     // Get the matched string
+                .Select(s => s.Trim('\''))// Remove single quotes if needed
+                .ToArray();
             var command = new Queue<string>(parsedInput);
 
             var firstLevelCommand = command.Dequeue();
