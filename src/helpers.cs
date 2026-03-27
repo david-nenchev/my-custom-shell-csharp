@@ -30,15 +30,15 @@
                 Console.WriteLine(message);
             }
 
-        string NormalizePath(string path)
-        {
-            if (path.Length > 1 && path.EndsWith(Path.DirectorySeparatorChar))
+            public static string NormalizePath(string path)
             {
-                return path.TrimEnd(Path.DirectorySeparatorChar);
+                if (path.Length > 1 && path.EndsWith(Path.DirectorySeparatorChar))
+                {
+                    return path.TrimEnd(Path.DirectorySeparatorChar);
+                }
+                return path;
             }
-            return path;
         }
-    }
 
         static class Patterns
         {
