@@ -53,29 +53,29 @@ class Program
                     ToOutput(shellCurrentDirectory);
                     break;
                 case CD:
-                    var potentialNewDirectoryPath = arguments;
+                    var newPath = arguments;
 
-                    bool isAbsolute = Path.IsPathRooted(potentialNewDirectoryPath);
+                    bool isAbsolute = Path.IsPathRooted(newPath);
 
-                    if (potentialNewDirectoryPath.Contains('~'))
+                    if (newPath.StartsWith("~/") || newPath.StartsWith("~\\"))
                     {
-                        potentialNewDirectoryPath = potentialNewDirectoryPath.Replace("~", homeDirectory);
+                        newPath = newPath.Replace("~", homeDirectory);
                     }
 
-                    if(!isAbsolute)
+                    if (!isAbsolute)
                     {
-                        potentialNewDirectoryPath = NormalizePath(Path.GetFullPath(potentialNewDirectoryPath, shellCurrentDirectory));
+                        newPath = NormalizePath(Path.GetFullPath(newPath, shellCurrentDirectory));
                     }
 
-                    var exists = Directory.Exists(potentialNewDirectoryPath);
+                    var exists = Directory.Exists(newPath);
                     
                     if (!exists)
                     {
-                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, potentialNewDirectoryPath));
+                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath));
                     } 
                     else
                     {
-                        shellCurrentDirectory = potentialNewDirectoryPath;
+                        shellCurrentDirectory = newPath;
                     }
                     break;
                 default:
