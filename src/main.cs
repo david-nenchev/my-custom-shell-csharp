@@ -87,9 +87,13 @@ class Program
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = fileInfo.FullName,
-                            UseShellExecute = true,  // needed to open non-exe files too
-                            Arguments = arguments
+                            UseShellExecute = false,  // needed to open non-exe files too
                         };
+
+                        foreach (var arg in command)
+                        {
+                            startInfo.ArgumentList.Add(arg);
+                        }
 
                         using Process process = Process.Start(startInfo)!;
                         process.WaitForExit();
