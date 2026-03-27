@@ -56,7 +56,6 @@ class Program
                 case CD:
                     var potentialNewDirectoryPath = arguments;
                     bool isValid = Regex.IsMatch(potentialNewDirectoryPath, PATH_VALIDATE_PATTERN);
-                    Console.WriteLine("|");
                     if (isValid)
                     {
                         bool exists = Directory.Exists(potentialNewDirectoryPath);
