@@ -18,8 +18,8 @@ class Program
 
             var consoleInput = Console.ReadLine()?.Trim();
             var parsedInput = Regex.Matches(consoleInput, @"'[^']*'|\S+")
-                .Select(m => m.Value)     // Get the matched string
-                .Select(s => s.Trim('\''))// Remove single quotes if needed
+                .Select(m => m.Value)
+                .Select(s => s.Trim('\''))
                 .ToArray();
             var command = new Queue<string>(parsedInput);
 
