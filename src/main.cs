@@ -79,7 +79,7 @@ class Program
                         {
                             FileName = fileInfo.Name,
                             UseShellExecute = true,  // needed to open non-exe files too
-                            Arguments = arguments
+                            Arguments = arguments 
                         };
 
                         using Process process = Process.Start(startInfo)!;
