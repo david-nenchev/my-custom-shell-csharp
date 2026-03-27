@@ -20,7 +20,7 @@ namespace codecrafters.helpers
         public const string FILE_LOCATION_TEMPLATE = "{0} is {1}";
         public const string NOT_FOUND_TEMPLATE = "{0}: not found";
         public const string COMMAND_NOT_FOUND_TEMPLATE = "{0}: command not found";
-        public const string CD_NO_SUCH_DIRECTORY_TEMPLATE = "{0}: {1}: No such file or directory";
+        public const string CD_NO_SUCH_DIRECTORY_TEMPLATE = "{0}: {1}: No such file or directoryy";
         public const string PATH_ENV_VAR = "PATH";
         public const string HOME_ENV_VAR = "HOME";
     }
@@ -131,7 +131,6 @@ namespace codecrafters.helpers
         public static FileInfo FindExecutable(string name)
         {
             var paths = GetEnvVariableValue(StringHelpers.PATH_ENV_VAR)?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
-
 
             foreach (var path in paths)
             {
