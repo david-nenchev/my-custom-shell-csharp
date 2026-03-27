@@ -1,13 +1,18 @@
+using codecrafters.helpers;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using static codecrafters.helpers.FileHelpers;
+using static codecrafters.helpers.Patterns;
 using static codecrafters.helpers.ShellCommands;
 using static codecrafters.helpers.StringHelpers;
 using static codecrafters.helpers.UtilityHelpers;
-using static codecrafters.helpers.FileHelpers;
 
 class Program
 {
     static void Main()
     {
+        var shellCurrentDirectory = Directory.GetCurrentDirectory();
+
         while (true)
         {
             Console.Write(PROMPT);
@@ -47,7 +52,20 @@ class Program
                     }
                     break;
                 case PWD:
-                    ToOutput(Directory.GetCurrentDirectory());
+                    ToOutput(shellCurrentDirectory);
+                    break;
+                case CD:
+                    var potentialNewDirectoryPath = arguments;
+                    bool isValid = Regex.IsMatch(potentialNewDirectoryPath, PATH_VALIDATE_PATTERN);
+                    if (isValid)
+                    {
+                        bool exists = Directory.Exists(potentialNewDirectoryPath);
+
+                        if (exists)
+                        {
+                            shellCurrentDirectory = potentialNewDirectoryPath;
+                        }
+                    }
                     break;
                 default:
                     var fileInfo = FindExecutable(firstLevelCommand);
