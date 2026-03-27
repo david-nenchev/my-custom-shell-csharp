@@ -57,7 +57,7 @@ class Program
 
                     bool isAbsolute = Path.IsPathRooted(newPath);
 
-                    if (newPath.StartsWith("~/") || newPath.StartsWith("~\\"))
+                    if (newPath.Contains('~'))
                     {
                         newPath = newPath.Replace("~", homeDirectory);
                     }
