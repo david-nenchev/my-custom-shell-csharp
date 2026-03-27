@@ -77,24 +77,6 @@ namespace codecrafters.helpers
             if (current.Length > 0)
                 args.Add(current.ToString());
 
-            // ✅ Merge adjacent quoted tokens (already concatenated)
-            // But also merge tokens separated by empty quotes
-            // We can do a single pass since empty quotes were removed
-            var mergedArgs = new List<string>();
-            var merged = new StringBuilder();
-
-            foreach (var arg in args)
-            {
-                if (merged.Length > 0)
-                    merged.Append(arg); // merge with previous
-                else
-                    merged.Append(arg);
-
-                // Only split if original had whitespace outside quotes
-                mergedArgs.Add(merged.ToString());
-                merged.Clear();
-            }
-
             return args.ToArray();
         }
     }
