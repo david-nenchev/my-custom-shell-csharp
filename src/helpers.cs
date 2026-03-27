@@ -6,6 +6,7 @@
             public const string EXIT = "exit";
             public const string ECHO = "echo";
             public const string TYPE = "type";
+            public const string PWD = "pwd";
             public static readonly string[] shellCommands = { EXIT, ECHO, TYPE };
         }
         static class StringHelpers
@@ -57,7 +58,7 @@
 
             public static FileInfo FindExecutable(string name)
             {
-                var paths = Environment.GetEnvironmentVariable(StringHelpers.PATH_ENV_VAR)?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+                var paths = GetPathEnvVarValue()?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
 
 
                 foreach (var path in paths)
@@ -78,5 +79,10 @@
 
                 return null;
             }
+
+            public static string GetPathEnvVarValue()
+            {
+                return Environment.GetEnvironmentVariable(StringHelpers.PATH_ENV_VAR);
+        }
         }
     }

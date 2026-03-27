@@ -37,7 +37,8 @@ class Program
 
                         if (typeFileInfo != null)
                         {
-                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name)));
+                            var fullPath = Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name);
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, Path.Combine(fullPath, typeFileInfo.Name)));
                         }
                         else
                         {
@@ -45,8 +46,10 @@ class Program
                         }
                     }
                     break;
+                case PWD:
+                    ToOutput(Directory.GetCurrentDirectory());
+                    break;
                 default:
-
                     var fileInfo = FindExecutable(firstLevelCommand);
 
                     if (fileInfo != null)
