@@ -38,7 +38,7 @@ class Program
                         if (typeFileInfo != null)
                         {
                             var fullPath = Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name);
-                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, Path.Combine(fullPath, typeFileInfo.Name)));
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath));
                         }
                         else
                         {
