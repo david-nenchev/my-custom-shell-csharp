@@ -57,16 +57,16 @@ class Program
                 case CD:
                     var potentialNewDirectoryPath = arguments;
                     
-                        bool exists = Directory.Exists(potentialNewDirectoryPath);
-                        
-                        if (exists)
-                        {
-                            shellCurrentDirectory = potentialNewDirectoryPath;
-                            break;
-                        }
+                    var exists = Directory.Exists(potentialNewDirectoryPath);
                     
-
-                    ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, potentialNewDirectoryPath));
+                    if (!exists)
+                    {
+                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, potentialNewDirectoryPath));
+                    } 
+                    else
+                    {
+                        shellCurrentDirectory = potentialNewDirectoryPath;
+                    }
                     break;
                 default:
                     var fileInfo = FindExecutable(firstLevelCommand);
