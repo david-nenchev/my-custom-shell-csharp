@@ -83,7 +83,7 @@ class Program
 
                     if (fileInfo != null)
                     {
-                        Console.WriteLine(fileInfo.Directory);
+
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = fileInfo.Name,
