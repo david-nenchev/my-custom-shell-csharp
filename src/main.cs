@@ -56,7 +56,14 @@ class Program
                     break;
                 case CD:
                     var potentialNewDirectoryPath = arguments;
-                    
+
+                    bool isAbsolute = Path.IsPathRooted(potentialNewDirectoryPath);
+
+                    if(!isAbsolute)
+                    {
+                        potentialNewDirectoryPath = Path.Combine(shellCurrentDirectory, potentialNewDirectoryPath);
+                    }
+
                     var exists = Directory.Exists(potentialNewDirectoryPath);
                     
                     if (!exists)
