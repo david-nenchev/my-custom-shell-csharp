@@ -38,7 +38,7 @@ namespace codecrafters.helpers
             // normal messages can be loged in file or console
             if (outputLocation != null)
             {
-                File.WriteAllText(outputLocation, message);
+                File.WriteAllText(outputLocation, message + Environment.NewLine);
             }
             else
             {
