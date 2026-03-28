@@ -68,7 +68,7 @@ namespace codecrafters.helpers
         {
             if (input.Contains('>'))
             {
-                string[] splittedInput = input.Split('>') ?? [];
+                string[] splittedInput = input.Split(["1>", ">"], StringSplitOptions.None) ?? [];
                 var outputRedirect = string.Join(string.Empty, ParseShellCommand(splittedInput[1]));
                 outputRedirect = NormalizePath(outputRedirect);
                 return (splittedInput[0], outputRedirect);
