@@ -87,7 +87,7 @@ class Program
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
                             FileName = fileInfo.Name,
-                            UseShellExecute = false,  // needed to open non-exe files too
+                            UseShellExecute = false,
                         };
 
                         foreach (var arg in command)

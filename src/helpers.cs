@@ -46,18 +46,25 @@ namespace codecrafters.helpers
             var args = new List<string>();
             var current = new StringBuilder();
             bool inSingleQuote = false;
+            bool inDoubleQuote = false;
 
             for (int i = 0; i < input.Length; i++)
             {
                 char c = input[i];
 
-                if (c == '\'')
+                if (c == '\'' && !inDoubleQuote)
                 {
-                    inSingleQuote = !inSingleQuote; // toggle quote
+                    inSingleQuote = !inSingleQuote; // toggle single quote
                     continue; // skip quote itself
                 }
 
-                if (char.IsWhiteSpace(c) && !inSingleQuote)
+                if (c == '"' && !inSingleQuote)
+                {
+                    inDoubleQuote = !inDoubleQuote; // toggle double quote
+                    continue; // skip quote itself
+                }
+
+                if (char.IsWhiteSpace(c) && !inSingleQuote && !inDoubleQuote)
                 {
                     // space outside quotes → finish current token if not empty
                     if (current.Length > 0)
