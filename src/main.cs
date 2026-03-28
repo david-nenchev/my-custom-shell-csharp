@@ -21,6 +21,16 @@ class Program
             var parsedInput = ParseShellCommand(outputRedirectParsedInput ?? string.Empty);
             var command = new Queue<string>(parsedInput);
 
+            // Create redirect files if specified (even if empty)
+            if (errorRedirect != null)
+            {
+                File.WriteAllText(errorRedirect, string.Empty);
+            }
+            if (outputRedirect != null)
+            {
+                File.WriteAllText(outputRedirect, string.Empty);
+            }
+
             var firstLevelCommand = command.Dequeue();
             var arguments = string.Join(SPACE, command);
 
