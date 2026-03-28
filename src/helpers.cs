@@ -40,13 +40,14 @@ namespace codecrafters.helpers
             {
                 try
                 {
-                    File.WriteAllText(outputLocation, message);
+                    // Write to file - add newline to match console behavior
+                    File.WriteAllText(outputLocation, message + Environment.NewLine);
                 }
                 catch(Exception ex)
                 {
                     Console.WriteLine("No such file or directory");
                 }
-               
+
             }
             else
             {

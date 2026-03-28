@@ -87,8 +87,10 @@ class Program
 
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            FileName = fileInfo.Name,
+                            FileName = fileInfo.FullName,
                             UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = false, // stderr goes to console
                         };
 
                         foreach (var arg in command)
@@ -97,7 +99,15 @@ class Program
                         }
 
                         using Process process = Process.Start(startInfo)!;
+                        string output = process.StandardOutput.ReadToEnd();
                         process.WaitForExit();
+
+                        if (!string.IsNullOrEmpty(output))
+                        {
+                            // Remove trailing newline since ToOutput adds one
+                            output = output.TrimEnd('\n', '\r');
+                            ToOutput(output, outputRedirect);
+                        }
 
                     }
                     else
