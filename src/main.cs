@@ -97,13 +97,7 @@ class Program
                         }
 
                         using Process process = Process.Start(startInfo)!;
-                        string output = process.StandardOutput.ReadToEnd();
                         process.WaitForExit();
-
-                        if (!string.IsNullOrEmpty(output))
-                        {
-                            ToOutput(output.TrimEnd('\n', '\r'), outputRedirect);
-                        }
 
                     }
                     else

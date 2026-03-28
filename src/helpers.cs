@@ -38,7 +38,7 @@ namespace codecrafters.helpers
             // normal messages can be loged in file or console
             if (outputLocation != null)
             {
-                File.WriteAllText(outputLocation, message + Environment.NewLine);
+                File.WriteAllText(outputLocation, message);
             }
             else
             {
@@ -59,7 +59,7 @@ namespace codecrafters.helpers
         {
             if (input.Contains('>'))
             {
-                string[] splittedInput = input.Split([">", "1>"], StringSplitOptions.None);
+                string[] splittedInput = input.Split('>') ?? [];
                 var outputRedirect = string.Join(string.Empty, ParseShellCommand(splittedInput[1]));
                 outputRedirect = NormalizePath(outputRedirect);
                 return (splittedInput[0], outputRedirect);
