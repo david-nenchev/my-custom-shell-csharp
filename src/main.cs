@@ -87,7 +87,7 @@ class Program
 
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
-                            FileName = fileInfo.FullName,
+                            FileName = fileInfo.Name,
                             UseShellExecute = false,
                             RedirectStandardOutput = true,
                             RedirectStandardError = false, // stderr goes to console
