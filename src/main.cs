@@ -16,8 +16,9 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var (preParsedInput, outputRedirect) = ParseOutputRedirect(consoleInput);
-            var parsedInput = ParseShellCommand(preParsedInput ?? string.Empty);
+            var (errRedirectParsedInput, errorRedirect) = ParseRedirect(consoleInput, ["2>"]);
+            var (outputRedirectParsedInput, outputRedirect) = ParseRedirect(errRedirectParsedInput, ["1>", ">"]);
+            var parsedInput = ParseShellCommand(outputRedirectParsedInput ?? string.Empty);
             var command = new Queue<string>(parsedInput);
 
             var firstLevelCommand = command.Dequeue();

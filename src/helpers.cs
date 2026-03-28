@@ -27,12 +27,6 @@ namespace codecrafters.helpers
 
     static class UtilityHelpers
     {
-        public static void ToOutputError(string message)
-        {
-            // error messages are loged to console
-            Console.WriteLine(message);
-        }
-
         public static void ToOutput(string message, string? outputLocation)
         {
             // normal messages can be loged in file or console
@@ -64,11 +58,11 @@ namespace codecrafters.helpers
             return path;
         }
 
-        public static (string, string?) ParseOutputRedirect(string input)
+        public static (string, string?) ParseRedirect(string input, string[] redirectOperators)
         {
-            if (input.Contains('>'))
+            if (redirectOperators.Any(x => input.Contains(x)))
             {
-                string[] splittedInput = input.Split(["1>", ">"], StringSplitOptions.None) ?? [];
+                string[] splittedInput = input.Split(redirectOperators, StringSplitOptions.None) ?? [];
                 var outputRedirect = string.Join(string.Empty, ParseShellCommand(splittedInput[1]));
                 outputRedirect = NormalizePath(outputRedirect);
                 return (splittedInput[0], outputRedirect);
