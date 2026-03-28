@@ -16,7 +16,8 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var parsedInput = ParseShellCommand(consoleInput ?? string.Empty);
+            var (preParsedInput, outputRedirect) = ParseOutputRedirect(consoleInput);
+            var parsedInput = ParseShellCommand(preParsedInput ?? string.Empty);
             var command = new Queue<string>(parsedInput);
 
             var firstLevelCommand = command.Dequeue();
@@ -27,12 +28,12 @@ class Program
                 case EXIT:
                     return;
                 case ECHO:
-                    ToOutput(string.Join(SPACE, command));
+                    ToOutput(string.Join(SPACE, command), outputRedirect);
                     break;
                 case TYPE:
                     if (shellCommands.Contains(arguments))
                     {
-                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments));
+                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments), outputRedirect);
                     }
                     else
                     {
@@ -41,16 +42,16 @@ class Program
                         if (typeFileInfo != null)
                         {
                             var fullPath = Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name);
-                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath));
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath), outputRedirect);
                         }
                         else
                         {
-                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments));
+                            ToOutputError(string.Format(NOT_FOUND_TEMPLATE, arguments));
                         }
                     }
                     break;
                 case PWD:
-                    ToOutput(shellCurrentDirectory);
+                    ToOutput(shellCurrentDirectory, outputRedirect);
                     break;
                 case CD:
                     var newPath = arguments;
@@ -71,7 +72,7 @@ class Program
                     
                     if (!exists)
                     {
-                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath));
+                        ToOutputError(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath));
                     } 
                     else
                     {
@@ -101,7 +102,7 @@ class Program
                     }
                     else
                     {
-                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand));
+                        ToOutputError(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand));
                     }
                     break;
             }
