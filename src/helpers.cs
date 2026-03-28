@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Dynamic;
+using System.Numerics;
 using System.Text;
 namespace codecrafters.helpers
 {
@@ -10,6 +12,9 @@ namespace codecrafters.helpers
         public const string PWD = "pwd";
         public const string CD = "cd";
         public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
+        public static readonly string[] outputOperators = { "1>", ">", ">>" };
+        public static readonly string[] erorOuputOperators = { "2>", "2>>" };
+
     }
 
     static class StringHelpers
@@ -27,15 +32,22 @@ namespace codecrafters.helpers
 
     static class UtilityHelpers
     {
-        public static void ToOutput(string message, string? outputLocation)
+        public static void ToOutput(string message, string? outputRedirect, bool isRedirectAppended)
         {
             // normal messages can be loged in file or console
-            if (outputLocation != null)
+            if (outputRedirect != null)
             {
                 try
                 {
                     // Write to file - add newline to match console behavior
-                    File.WriteAllText(outputLocation, message + Environment.NewLine);
+                    if (isRedirectAppended)
+                    {
+                        File.AppendAllText(outputRedirect, message + Environment.NewLine);
+                    }
+                    else
+                    {
+                        File.WriteAllText(outputRedirect, message + Environment.NewLine);
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -58,20 +70,23 @@ namespace codecrafters.helpers
             return path;
         }
 
-        public static (string, string?) ParseRedirect(string input, string[] redirectOperators)
+        public static (string[], string?, string?) ParseInput(string input)
         {
-            if (redirectOperators.Any(x => input.Contains(x)))
+            foreach(var op in ShellCommands.outputOperators.Concat(ShellCommands.erorOuputOperators))
             {
-                string[] splittedInput = input.Split(redirectOperators, StringSplitOptions.None) ?? [];
-                var outputRedirect = string.Join(string.Empty, ParseShellCommand(splittedInput[1]));
-                outputRedirect = NormalizePath(outputRedirect);
-                return (splittedInput[0], outputRedirect);
+                if (input.Contains(op))
+                {
+                    var index = input.IndexOf(op);
+                    var restOfCommand = input.Substring(0, index);
+                    var redirect = input.Substring(index).Trim();
+                    return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
+                }
             }
 
-            return (input, null);
+            return (ParseShellCommand(input), null, null);
         }
 
-        public static string[] ParseShellCommand(string input)
+        private static string[] ParseShellCommand(string input)
         {
             var args = new List<string>();
             var current = new StringBuilder();

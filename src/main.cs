@@ -10,15 +10,39 @@ class Program
     {
         var shellCurrentDirectory = Directory.GetCurrentDirectory();
         var homeDirectory = GetEnvVariableValue(HOME_ENV_VAR);
+        string? outputRedirect = null;
+        string? errorRedirect = null;
+        var isRedirectAppended = false;
+
 
         while (true)
         {
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var (errRedirectParsedInput, errorRedirect) = ParseRedirect(consoleInput, ["2>"]);
-            var (outputRedirectParsedInput, outputRedirect) = ParseRedirect(errRedirectParsedInput, ["1>", ">"]);
-            var parsedInput = ParseShellCommand(outputRedirectParsedInput ?? string.Empty);
+            var (parsedInput, redirect, redirectOp) = ParseInput(consoleInput);
+
+            switch (redirectOp)
+            {
+                case ">":
+                case "1>":
+                    outputRedirect = redirect;
+                    break;
+                case "2>":
+                    errorRedirect = redirect;
+                    break;
+                case ">>":
+                case "1>>":
+                    outputRedirect = redirect;
+                    isRedirectAppended = true;
+                    break;
+                case "2>>":
+                    errorRedirect = redirect;
+                    isRedirectAppended = true;
+                    break;
+            }
+
+         
             var command = new Queue<string>(parsedInput);
 
             // Create redirect files if specified (even if empty)
@@ -39,12 +63,12 @@ class Program
                 case EXIT:
                     return;
                 case ECHO:
-                    ToOutput(string.Join(SPACE, command), outputRedirect);
+                    ToOutput(string.Join(SPACE, command), outputRedirect, isRedirectAppended);
                     break;
                 case TYPE:
                     if (shellCommands.Contains(arguments))
                     {
-                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments), outputRedirect);
+                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments), outputRedirect, isRedirectAppended);
                     }
                     else
                     {
@@ -53,16 +77,16 @@ class Program
                         if (typeFileInfo != null)
                         {
                             var fullPath = Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name);
-                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath), outputRedirect);
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath), outputRedirect, isRedirectAppended);
                         }
                         else
                         {
-                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments), errorRedirect);
+                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments), errorRedirect, isRedirectAppended);
                         }
                     }
                     break;
                 case PWD:
-                    ToOutput(shellCurrentDirectory, outputRedirect);
+                    ToOutput(shellCurrentDirectory, outputRedirect, isRedirectAppended);
                     break;
                 case CD:
                     var newPath = arguments;
@@ -83,7 +107,7 @@ class Program
                     
                     if (!exists)
                     {
-                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath), errorRedirect);
+                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath), errorRedirect, isRedirectAppended);
                     } 
                     else
                     {
@@ -118,20 +142,20 @@ class Program
                         {
                             // Remove trailing newline since ToOutput adds one
                             output = output.TrimEnd('\n', '\r');
-                            ToOutput(output, outputRedirect);
+                            ToOutput(output, outputRedirect, isRedirectAppended);
                         }
 
                         if (!string.IsNullOrEmpty(errorOutput))
                         {
                             // Remove trailing newline since ToOutput adds one
                             errorOutput = errorOutput.TrimEnd('\n', '\r');
-                            ToOutput(errorOutput, errorRedirect);
+                            ToOutput(errorOutput, errorRedirect, isRedirectAppended);
                         }
 
                     }
                     else
                     {
-                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand), errorRedirect);
+                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand), errorRedirect, isRedirectAppended);
                     }
                     break;
             }
