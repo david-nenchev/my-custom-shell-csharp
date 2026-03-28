@@ -47,7 +47,7 @@ class Program
                         }
                         else
                         {
-                            ToOutputError(string.Format(NOT_FOUND_TEMPLATE, arguments));
+                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments), errorRedirect);
                         }
                     }
                     break;
@@ -73,7 +73,7 @@ class Program
                     
                     if (!exists)
                     {
-                        ToOutputError(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath));
+                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath), errorRedirect);
                     } 
                     else
                     {
@@ -113,7 +113,7 @@ class Program
                     }
                     else
                     {
-                        ToOutputError(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand));
+                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand), errorRedirect);
                     }
                     break;
             }
