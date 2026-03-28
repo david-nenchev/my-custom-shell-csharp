@@ -91,7 +91,7 @@ class Program
                             FileName = fileInfo.Name,
                             UseShellExecute = false,
                             RedirectStandardOutput = true,
-                            RedirectStandardError = false, // stderr goes to console
+                            RedirectStandardError = errorRedirect != null, // redirect stderr if errorRedirect is set
                         };
 
                         foreach (var arg in command)
@@ -101,6 +101,7 @@ class Program
 
                         using Process process = Process.Start(startInfo)!;
                         string output = process.StandardOutput.ReadToEnd();
+                        string errorOutput = errorRedirect != null ? process.StandardError.ReadToEnd() : string.Empty;
                         process.WaitForExit();
 
                         if (!string.IsNullOrEmpty(output))
@@ -108,6 +109,13 @@ class Program
                             // Remove trailing newline since ToOutput adds one
                             output = output.TrimEnd('\n', '\r');
                             ToOutput(output, outputRedirect);
+                        }
+
+                        if (!string.IsNullOrEmpty(errorOutput))
+                        {
+                            // Remove trailing newline since ToOutput adds one
+                            errorOutput = errorOutput.TrimEnd('\n', '\r');
+                            ToOutput(errorOutput, errorRedirect);
                         }
 
                     }
