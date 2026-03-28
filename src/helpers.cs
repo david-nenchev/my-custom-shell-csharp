@@ -52,6 +52,14 @@ namespace codecrafters.helpers
             {
                 char c = input[i];
 
+                // Handle backslash escape (not inside single quotes)
+                if (c == '\\' && !inSingleQuote && i + 1 < input.Length)
+                {
+                    i++; // skip the backslash
+                    current.Append(input[i]); // add the next character as literal
+                    continue;
+                }
+
                 if (c == '\'' && !inDoubleQuote)
                 {
                     inSingleQuote = !inSingleQuote; // toggle single quote
