@@ -69,12 +69,40 @@ namespace codecrafters.helpers
             // Check operators in order (longer first) to avoid substring matches
             foreach(var op in ShellCommands.allRedirectOperators)
             {
-                if (input.Contains(op))
+                var index = input.IndexOf(op);
+                if (index != -1)
                 {
-                    var index = input.IndexOf(op);
-                    var restOfCommand = input.Substring(0, index);
-                    var redirect = input.Substring(index + op.Length).Trim();
-                    return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
+                    // Check if this is actually the operator we're looking for
+                    // (not part of a longer operator)
+                    // For example, don't match ">" if it's part of "2>" or ">>"
+                    bool isValidMatch = true;
+
+                    // Check character before the operator
+                    if (index > 0 && (input[index - 1] == '1' || input[index - 1] == '2'))
+                    {
+                        // This might be part of 1> or 2>, skip if we're looking for plain >
+                        if (op == ">")
+                        {
+                            isValidMatch = false;
+                        }
+                    }
+
+                    // Check character after the operator
+                    if (index + op.Length < input.Length && input[index + op.Length] == '>')
+                    {
+                        // This is part of >>, skip if we're looking for single >
+                        if (op == ">" || op == "1>" || op == "2>")
+                        {
+                            isValidMatch = false;
+                        }
+                    }
+
+                    if (isValidMatch)
+                    {
+                        var restOfCommand = input.Substring(0, index);
+                        var redirect = input.Substring(index + op.Length).Trim();
+                        return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
+                    }
                 }
             }
 
