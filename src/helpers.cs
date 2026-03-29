@@ -12,8 +12,8 @@ namespace codecrafters.helpers
         public const string PWD = "pwd";
         public const string CD = "cd";
         public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
-        public static readonly string[] outputOperators = { "1>", ">", ">>" };
-        public static readonly string[] erorOuputOperators = { "2>", "2>>" };
+        public static readonly string[] outputOperators = { ">>", "1>", ">" };
+        public static readonly string[] erorOuputOperators = { "2>>" , "2>" };
 
     }
 
@@ -78,7 +78,7 @@ namespace codecrafters.helpers
                 {
                     var index = input.IndexOf(op);
                     var restOfCommand = input.Substring(0, index);
-                    var redirect = input.Substring(index).Trim();
+                    var redirect = input.Substring(index + op.Length).Trim();
                     return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
                 }
             }
