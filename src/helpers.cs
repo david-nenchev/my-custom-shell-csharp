@@ -13,6 +13,7 @@ namespace codecrafters.helpers
         public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD , CD };
         // Order matters: check longer operators first to avoid substring matches
 
+        
         public static readonly string[] allRedirectOperators = { "2>>", "1>>", ">>", "2>", "1>", ">" };
 
     }
@@ -101,7 +102,7 @@ namespace codecrafters.helpers
 
                         if (allMatches.Count == 1)
                         {
-                            // Single match: complete it
+                            // Single match: complete it with trailing space
                             var completedCommand = allMatches[0];
                             Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
                             sb.Clear();
@@ -111,20 +112,35 @@ namespace codecrafters.helpers
                         }
                         else if (allMatches.Count > 1)
                         {
-                            // Multiple matches
-                            if (lastKey == ConsoleKey.Tab && lastTabInput == currentInput)
+                            // Multiple matches: complete to longest common prefix
+                            var commonPrefix = GetLongestCommonPrefix(allMatches);
+
+                            if (commonPrefix.Length > partialCommand.Length)
                             {
-                                // Second consecutive tab: show all matches
-                                Console.WriteLine(); // Move to new line
-                                allMatches.Sort(); // Alphabetical order
-                                Console.WriteLine(string.Join("  ", allMatches)); // Two spaces between items
-                                Console.Write(StringHelpers.PROMPT + currentInput); // Redisplay prompt with input
+                                // There is a longer common prefix: complete to it (no trailing space)
+                                Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
+                                sb.Clear();
+                                sb.Append(commonPrefix);
+                                Console.Write(commonPrefix);
+                                lastTabInput = commonPrefix;
                             }
                             else
                             {
-                                // First tab: ring bell
-                                Console.Write(StringHelpers.BELL);
-                                lastTabInput = currentInput;
+                                // No further completion possible
+                                if (lastKey == ConsoleKey.Tab && lastTabInput == currentInput)
+                                {
+                                    // Second consecutive tab: show all matches
+                                    Console.WriteLine(); // Move to new line
+                                    allMatches.Sort(); // Alphabetical order
+                                    Console.WriteLine(string.Join("  ", allMatches)); // Two spaces between items
+                                    Console.Write(StringHelpers.PROMPT + currentInput); // Redisplay prompt with input
+                                }
+                                else
+                                {
+                                    // First tab with no further completion: ring bell
+                                    Console.Write(StringHelpers.BELL);
+                                    lastTabInput = currentInput;
+                                }
                             }
                         }
                         else
@@ -155,6 +171,32 @@ namespace codecrafters.helpers
                 }
                 // Ignore all other keys (arrows, delete, etc.)
             }
+        }
+
+        private static string GetLongestCommonPrefix(List<string> strings)
+        {
+            if (strings == null || strings.Count == 0)
+                return string.Empty;
+
+            if (strings.Count == 1)
+                return strings[0];
+
+            // Start with the first string as the prefix
+            var prefix = strings[0];
+
+            for (int i = 1; i < strings.Count; i++)
+            {
+                // Shorten the prefix until it matches the start of the current string
+                while (!strings[i].StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (prefix.Length == 0)
+                        return string.Empty;
+
+                    prefix = prefix.Substring(0, prefix.Length - 1);
+                }
+            }
+
+            return prefix;
         }
 
         public static void ToOutput(string message, string? outputRedirect, bool isRedirectAppended)
