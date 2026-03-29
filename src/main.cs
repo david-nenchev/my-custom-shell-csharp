@@ -13,7 +13,7 @@ class Program
 
         while (true)
         {
-            Console.Write(PROMPT);
+            Console.Write(PROMPT); 
 
             var consoleInput = ReadUserInput()?.Trim();
             var parsedInputModel = ParseInput(consoleInput);
