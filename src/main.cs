@@ -46,14 +46,27 @@ class Program
          
             var command = new Queue<string>(parsedInput);
 
-            // Create redirect files if specified (even if empty) - but only for overwrite mode
+            // Create/handle redirect files
             if (!isRedirectAppended)
             {
+                // Overwrite mode: create empty file (truncate if exists)
                 if (errorRedirect != null)
                 {
                     File.WriteAllText(errorRedirect, string.Empty);
                 }
                 if (outputRedirect != null)
+                {
+                    File.WriteAllText(outputRedirect, string.Empty);
+                }
+            }
+            else
+            {
+                // Append mode: create empty file only if it doesn't exist
+                if (errorRedirect != null && !File.Exists(errorRedirect))
+                {
+                    File.WriteAllText(errorRedirect, string.Empty);
+                }
+                if (outputRedirect != null && !File.Exists(outputRedirect))
                 {
                     File.WriteAllText(outputRedirect, string.Empty);
                 }
