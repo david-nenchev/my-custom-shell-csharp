@@ -57,7 +57,16 @@ namespace codecrafters.helpers
                     if (words.Length <= 1)
                     {
                         // Complete the first word (command)
-                        var partialCommand = words.Length == 1 ? words[0] : currentInput;
+                        var partialCommand = words.Length == 1 ? words[0] : currentInput.Trim();
+
+                        if (string.IsNullOrWhiteSpace(partialCommand))
+                        {
+                            // Nothing to complete
+                            Console.Write(StringHelpers.BELL);
+                            lastKey = ConsoleKey.Tab;
+                            continue;
+                        }
+
                         var allMatches = new List<string>();
 
                         // Collect builtin commands that match
@@ -70,8 +79,15 @@ namespace codecrafters.helpers
                         }
 
                         // Collect external executables that match
-                        var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
-                        allMatches.AddRange(matchingExecutables);
+                        try
+                        {
+                            var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
+                            allMatches.AddRange(matchingExecutables);
+                        }
+                        catch
+                        {
+                            // If there's an error finding executables, continue with just builtins
+                        }
 
                         if (allMatches.Count == 1)
                         {
