@@ -253,7 +253,7 @@ namespace codecrafters.helpers
                 var fileExists = File.Exists(fullPath);
                 if (fileExists)
                 {
-                    var canExecute = CanExecute(fullPath);
+                    var canExecute = CanExecute(fullPath); 
 
                     if (canExecute)
                     {
