@@ -44,14 +44,17 @@ class Program
          
             var command = new Queue<string>(parsedInput);
 
-            // Create redirect files if specified (even if empty)
-            if (errorRedirect != null)
+            // Create redirect files if specified (even if empty) - but only for overwrite mode
+            if (!isRedirectAppended)
             {
-                File.WriteAllText(errorRedirect, string.Empty);
-            }
-            if (outputRedirect != null)
-            {
-                File.WriteAllText(outputRedirect, string.Empty);
+                if (errorRedirect != null)
+                {
+                    File.WriteAllText(errorRedirect, string.Empty);
+                }
+                if (outputRedirect != null)
+                {
+                    File.WriteAllText(outputRedirect, string.Empty);
+                }
             }
 
             var firstLevelCommand = command.Dequeue();
