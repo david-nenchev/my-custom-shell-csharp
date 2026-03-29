@@ -67,27 +67,12 @@ namespace codecrafters.helpers
         public static (string[], string?, string?) ParseInput(string input)
         {
             // Check operators in order (longer first) to avoid substring matches
-            // Must check >> before >, 2>> before 2>, 1>> before 1>
-            string[] operatorsToCheck = { "2>>", "1>>", ">>", "2>", "1>", ">" };
-
-            foreach(var op in operatorsToCheck)
+            foreach(var op in ShellCommands.allRedirectOperators)
             {
-                var index = input.IndexOf(op);
-                if (index != -1)
+                if (input.Contains(op))
                 {
-                    // For plain > or >>, make sure it's not preceded by 1 or 2
-                    if ((op == ">" || op == ">>") && index > 0)
-                    {
-                        char prevChar = input[index - 1];
-                        if (prevChar == '1' || prevChar == '2')
-                        {
-                            // This is actually 1> or 2>, not plain >
-                            // Continue to check for next operator
-                            continue;
-                        }
-                    }
-
-                    var restOfCommand = input.Substring(0, index).Trim();
+                    var index = input.IndexOf(op);
+                    var restOfCommand = input.Substring(0, index);
                     var redirect = input.Substring(index + op.Length).Trim();
                     return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
                 }
