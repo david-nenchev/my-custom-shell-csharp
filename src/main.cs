@@ -136,7 +136,7 @@ class Program
                             ToOutput(output, parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                         }
 
-                        if (!string.IsNullOrEmpty(errorOutput))
+                        if (!string.IsNullOrEmpty(errorOutput)) 
                         {
                             // Remove trailing newline since ToOutput adds one
                             errorOutput = errorOutput.TrimEnd('\n', '\r');
