@@ -12,8 +12,9 @@ namespace codecrafters.helpers
         public const string PWD = "pwd";
         public const string CD = "cd";
         public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
-        public static readonly string[] outputOperators = { "1>>", ">>", "1>", ">" };
-        public static readonly string[] erorOuputOperators = { "2>>" , "2>" };
+        // Order matters: check longer operators first to avoid substring matches
+
+        public static readonly string[] allRedirectOperators = { "2>>", "1>>", ">>", "2>", "1>", ">" };
 
     }
 
@@ -47,8 +48,6 @@ namespace codecrafters.helpers
                     {
                         File.WriteAllText(outputRedirect, message + Environment.NewLine);
                     }
-               
-
             }
             else
             {
@@ -67,7 +66,8 @@ namespace codecrafters.helpers
 
         public static (string[], string?, string?) ParseInput(string input)
         {
-            foreach(var op in ShellCommands.outputOperators.Concat(ShellCommands.erorOuputOperators))
+            // Check operators in order (longer first) to avoid substring matches
+            foreach(var op in ShellCommands.allRedirectOperators)
             {
                 if (input.Contains(op))
                 {
