@@ -16,35 +16,35 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var (parsedInput, redirect, redirectOp) = ParseInput(consoleInput);
+            var parsedInput = ParseInput(consoleInput);
 
             // Reset redirect variables for each command
             string? outputRedirect = null;
             string? errorRedirect = null;
             bool isRedirectAppended = false;
 
-            switch (redirectOp)
+            switch (parsedInput.Operator)
             {
                 case ">":
                 case "1>":
-                    outputRedirect = redirect;
+                    outputRedirect = parsedInput.RedirectLocation;
                     break;
                 case "2>":
-                    errorRedirect = redirect;
+                    errorRedirect = parsedInput.RedirectLocation;
                     break;
                 case ">>":
                 case "1>>":
-                    outputRedirect = redirect;
+                    outputRedirect = parsedInput.RedirectLocation;
                     isRedirectAppended = true;
                     break;
                 case "2>>":
-                    errorRedirect = redirect;
+                    errorRedirect = parsedInput.RedirectLocation;
                     isRedirectAppended = true;
                     break;
             }
 
          
-            var command = new Queue<string>(parsedInput);
+            var command = new Queue<string>(parsedInput.ParsedInput);
 
             // Create/handle redirect files
             if (!isRedirectAppended)

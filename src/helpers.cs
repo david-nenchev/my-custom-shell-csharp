@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-using System.Dynamic;
-using System.Numerics;
+﻿using codecrafters.models;
+using System.Diagnostics;
 using System.Text;
 namespace codecrafters.helpers
 {
@@ -64,7 +63,7 @@ namespace codecrafters.helpers
             return path;
         }
 
-        public static (string[], string?, string?) ParseInput(string input)
+        public static ParsedInputModel ParseInput(string input)
         {
             // Check operators in order (longer first) to avoid substring matches
             foreach(var op in ShellCommands.allRedirectOperators)
@@ -74,11 +73,11 @@ namespace codecrafters.helpers
                     var index = input.IndexOf(op);
                     var restOfCommand = input.Substring(0, index);
                     var redirect = input.Substring(index + op.Length).Trim();
-                    return (ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
+                    return new ParsedInputModel(ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
                 }
             }
 
-            return (ParseShellCommand(input), null, null);
+            return new ParsedInputModel (ParseShellCommand(input), null, null);
         }
 
         private static string[] ParseShellCommand(string input)
