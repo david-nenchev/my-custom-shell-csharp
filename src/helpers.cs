@@ -36,6 +36,8 @@ namespace codecrafters.helpers
         public static string ReadUserInput()
         {
             StringBuilder sb = new StringBuilder();
+            ConsoleKey lastKey = ConsoleKey.NoName;
+            string lastTabInput = string.Empty;
 
             while (true)
             {
@@ -56,46 +58,57 @@ namespace codecrafters.helpers
                     {
                         // Complete the first word (command)
                         var partialCommand = words.Length == 1 ? words[0] : currentInput;
-                        bool foundMatch = false;
-                        string completedCommand = null;
+                        var allMatches = new List<string>();
 
-                        // First, check builtin commands
+                        // Collect builtin commands that match
                         foreach (var command in ShellCommands.shellCommands)
                         {
                             if (command.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase))
                             {
-                                completedCommand = command;
-                                foundMatch = true;
-                                break;
+                                allMatches.Add(command);
                             }
                         }
 
-                        // If no builtin match, check external executables
-                        if (!foundMatch)
-                        {
-                            var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
-                            if (matchingExecutables.Count > 0)
-                            {
-                                completedCommand = matchingExecutables[0]; // Use first match
-                                foundMatch = true;
-                            }
-                        }
+                        // Collect external executables that match
+                        var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
+                        allMatches.AddRange(matchingExecutables);
 
-                        if (foundMatch && completedCommand != null)
+                        if (allMatches.Count == 1)
                         {
-                            // Clear current line and write completed command
+                            // Single match: complete it
+                            var completedCommand = allMatches[0];
                             Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
                             sb.Clear();
                             sb.Append(completedCommand);
                             sb.Append(' '); // Add space to buffer
                             Console.Write(completedCommand + ' '); // Write command with trailing space
                         }
+                        else if (allMatches.Count > 1)
+                        {
+                            // Multiple matches
+                            if (lastKey == ConsoleKey.Tab && lastTabInput == currentInput)
+                            {
+                                // Second consecutive tab: show all matches
+                                Console.WriteLine(); // Move to new line
+                                allMatches.Sort(); // Alphabetical order
+                                Console.WriteLine(string.Join("  ", allMatches)); // Two spaces between items
+                                Console.Write(StringHelpers.PROMPT + currentInput); // Redisplay prompt with input
+                            }
+                            else
+                            {
+                                // First tab: ring bell
+                                Console.Write(StringHelpers.BELL);
+                                lastTabInput = currentInput;
+                            }
+                        }
                         else
                         {
-                            // Ring bell if no match found
+                            // No matches: ring bell
                             Console.Write(StringHelpers.BELL);
                         }
                     }
+
+                    lastKey = ConsoleKey.Tab;
                 }
                 else if (keyInfo.Key == ConsoleKey.Backspace)
                 {
@@ -105,12 +118,14 @@ namespace codecrafters.helpers
                         sb.Length--; // Remove last character
                         Console.Write("\b \b"); // Move back, write space, move back again
                     }
+                    lastKey = ConsoleKey.Backspace;
                 }
                 else if (!char.IsControl(keyInfo.KeyChar))
                 {
                     // Regular printable character
                     sb.Append(keyInfo.KeyChar);
                     Console.Write(keyInfo.KeyChar);
+                    lastKey = keyInfo.Key;
                 }
                 // Ignore all other keys (arrows, delete, etc.)
             }
