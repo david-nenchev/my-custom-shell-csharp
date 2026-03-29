@@ -10,7 +10,7 @@ namespace codecrafters.helpers
         public const string TYPE = "type";
         public const string PWD = "pwd";
         public const string CD = "cd";
-        public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
+        public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD , CD };
         // Order matters: check longer operators first to avoid substring matches
 
         public static readonly string[] allRedirectOperators = { "2>>", "1>>", ">>", "2>", "1>", ">" };
@@ -32,6 +32,63 @@ namespace codecrafters.helpers
 
     static class UtilityHelpers
     {
+        public static string ReadUserInput()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            while (true)
+            {
+                var keyInfo = Console.ReadKey(true); // true = don't echo to console
+
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine(); // Move to next line
+                    return sb.ToString();
+                }
+                else if (keyInfo.Key == ConsoleKey.Tab)
+                {
+                    // Tab completion for commands
+                    var currentInput = sb.ToString();
+                    var words = currentInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                    if (words.Length <= 1)
+                    {
+                        // Complete the first word (command)
+                        var partialCommand = words.Length == 1 ? words[0] : currentInput;
+
+                        foreach (var command in ShellCommands.shellCommands)
+                        {
+                            if (command.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Clear current line and write completed command
+                                Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
+                                sb.Clear();
+                                sb.Append(command);
+                                Console.Write(command);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    // Handle backspace
+                    if (sb.Length > 0)
+                    {
+                        sb.Length--; // Remove last character
+                        Console.Write("\b \b"); // Move back, write space, move back again
+                    }
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    // Regular printable character
+                    sb.Append(keyInfo.KeyChar);
+                    Console.Write(keyInfo.KeyChar);
+                }
+                // Ignore all other keys (arrows, delete, etc.)
+            }
+        }
+
         public static void ToOutput(string message, string? outputRedirect, bool isRedirectAppended)
         {
             // normal messages can be loged in file or console

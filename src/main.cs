@@ -15,7 +15,7 @@ class Program
         {
             Console.Write(PROMPT);
 
-            var consoleInput = Console.ReadLine()?.Trim();
+            var consoleInput = ReadUserInput()?.Trim();
             var parsedInputModel = ParseInput(consoleInput);
          
             var command = new Queue<string>(parsedInputModel.ParsedInput);
