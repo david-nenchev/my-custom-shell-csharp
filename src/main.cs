@@ -40,9 +40,9 @@ class Program
                 {
                     File.WriteAllText(parsedInputModel.ErrorRedirect, string.Empty);
                 }
-                if (parsedInputModel.ErrorRedirect != null && !File.Exists(parsedInputModel.ErrorRedirect))
+                if (parsedInputModel.OutputRedirect != null && !File.Exists(parsedInputModel.OutputRedirect))
                 {
-                    File.WriteAllText(parsedInputModel.ErrorRedirect, string.Empty);
+                    File.WriteAllText(parsedInputModel.OutputRedirect, string.Empty);
                 }
             }
 
