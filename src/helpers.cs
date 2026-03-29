@@ -28,6 +28,7 @@ namespace codecrafters.helpers
         public const string CD_NO_SUCH_DIRECTORY_TEMPLATE = "{0}: {1}: No such file or directory";
         public const string PATH_ENV_VAR = "PATH";
         public const string HOME_ENV_VAR = "HOME";
+        public const string BELL = "\x07";
     }
 
     static class UtilityHelpers
@@ -55,6 +56,7 @@ namespace codecrafters.helpers
                     {
                         // Complete the first word (command)
                         var partialCommand = words.Length == 1 ? words[0] : currentInput;
+                        bool foundMatch = false;
 
                         foreach (var command in ShellCommands.shellCommands)
                         {
@@ -66,8 +68,15 @@ namespace codecrafters.helpers
                                 sb.Append(command);
                                 sb.Append(' '); // Add space to buffer
                                 Console.Write(command + ' '); // Write command with trailing space
+                                foundMatch = true;
                                 break;
                             }
+                        }
+
+                        // Ring bell if no match found
+                        if (!foundMatch)
+                        {
+                            Console.Write(StringHelpers.BELL);
                         }
                     }
                 }
