@@ -64,8 +64,7 @@ namespace codecrafters.helpers
                                 Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
                                 sb.Clear();
                                 sb.Append(command);
-                                sb.Append(' '); // Add space after command for next argument
-                                Console.Write(command);
+                                Console.Write(command + ' '); // Write command with trailing space
                                 break;
                             }
                         }
