@@ -51,13 +51,14 @@ namespace codecrafters.helpers
                 else if (keyInfo.Key == ConsoleKey.Tab)
                 {
                     // Tab completion for commands
-                    var currentInput = sb.ToString();
+                    var currentInput = sb.ToString().TrimStart(); // Trim leading spaces
                     var words = currentInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    if (words.Length <= 1)
+                    // Only complete if we're on the first word (command)
+                    if (words.Length == 0 || words.Length == 1)
                     {
                         // Complete the first word (command)
-                        var partialCommand = words.Length == 1 ? words[0] : currentInput.Trim();
+                        var partialCommand = words.Length >= 1 ? words[0] : string.Empty;
 
                         if (string.IsNullOrWhiteSpace(partialCommand))
                         {
@@ -70,19 +71,28 @@ namespace codecrafters.helpers
                         var allMatches = new List<string>();
 
                         // Collect builtin commands that match
+                        var builtinMatches = new List<string>();
                         foreach (var command in ShellCommands.shellCommands)
                         {
                             if (command.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase))
                             {
-                                allMatches.Add(command);
+                                builtinMatches.Add(command);
                             }
                         }
+                        allMatches.AddRange(builtinMatches);
 
-                        // Collect external executables that match
+                        // Collect external executables that match (excluding duplicates of builtins)
                         try
                         {
                             var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
-                            allMatches.AddRange(matchingExecutables);
+                            foreach (var exe in matchingExecutables)
+                            {
+                                // Only add if not already in matches (avoid duplicates with builtins)
+                                if (!allMatches.Contains(exe, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    allMatches.Add(exe);
+                                }
+                            }
                         }
                         catch
                         {
