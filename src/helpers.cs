@@ -73,11 +73,33 @@ namespace codecrafters.helpers
                     var index = input.IndexOf(op);
                     var restOfCommand = input.Substring(0, index);
                     var redirect = input.Substring(index + op.Length).Trim();
-                    return new ParsedInputModel(ParseShellCommand(restOfCommand), NormalizePath(string.Join(string.Empty, ParseShellCommand(redirect))), op);
+                    var parsedInputModel = new ParsedInputModel(ParseShellCommand(restOfCommand));
+
+                    switch (op)
+                    {
+                        case ">":
+                        case "1>":
+                            parsedInputModel.OutputRedirect = redirect;
+                            break;
+                        case "2>":
+                            parsedInputModel.ErrorRedirect = redirect;
+                            break;
+                        case ">>":
+                        case "1>>":
+                            parsedInputModel.OutputRedirect = redirect;
+                            parsedInputModel.IsRedirectAppended = true;
+                            break;
+                        case "2>>":
+                            parsedInputModel.ErrorRedirect = redirect;
+                            parsedInputModel.IsRedirectAppended = true;
+                            break;
+                    }
+
+                    return parsedInputModel;
                 }
             }
 
-            return new ParsedInputModel (ParseShellCommand(input), null, null);
+            return new ParsedInputModel (ParseShellCommand(input));
         }
 
         private static string[] ParseShellCommand(string input)

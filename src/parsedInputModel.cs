@@ -4,16 +4,17 @@ namespace codecrafters.models
 {
     public class ParsedInputModel
     {
-        public ParsedInputModel(string[] parsedInput, string? redirectLocation  = null, string? op = null)
+        public ParsedInputModel(string[] parsedInput)
         {
                 this.ParsedInput = parsedInput;
-                this.RedirectLocation = redirectLocation;
-                this.Operator = op;
         }
+
         public string[] ParsedInput { get; set; }
 
-        public string? RedirectLocation { get; set; }
+        public string? OutputRedirect { get; set; }
 
-        public string? Operator { get; set; }
+        public string? ErrorRedirect { get; set; }
+
+        public bool IsRedirectAppended { get; set; }
     }
 }

@@ -16,59 +16,33 @@ class Program
             Console.Write(PROMPT);
 
             var consoleInput = Console.ReadLine()?.Trim();
-            var parsedInput = ParseInput(consoleInput);
-
-            // Reset redirect variables for each command
-            string? outputRedirect = null;
-            string? errorRedirect = null;
-            bool isRedirectAppended = false;
-
-            switch (parsedInput.Operator)
-            {
-                case ">":
-                case "1>":
-                    outputRedirect = parsedInput.RedirectLocation;
-                    break;
-                case "2>":
-                    errorRedirect = parsedInput.RedirectLocation;
-                    break;
-                case ">>":
-                case "1>>":
-                    outputRedirect = parsedInput.RedirectLocation;
-                    isRedirectAppended = true;
-                    break;
-                case "2>>":
-                    errorRedirect = parsedInput.RedirectLocation;
-                    isRedirectAppended = true;
-                    break;
-            }
-
+            var parsedInputModel = ParseInput(consoleInput);
          
-            var command = new Queue<string>(parsedInput.ParsedInput);
+            var command = new Queue<string>(parsedInputModel.ParsedInput);
 
             // Create/handle redirect files
-            if (!isRedirectAppended)
+            if (!parsedInputModel.IsRedirectAppended)
             {
                 // Overwrite mode: create empty file (truncate if exists)
-                if (errorRedirect != null)
+                if (parsedInputModel.ErrorRedirect != null)
                 {
-                    File.WriteAllText(errorRedirect, string.Empty);
+                    File.WriteAllText(parsedInputModel.ErrorRedirect, string.Empty);
                 }
-                if (outputRedirect != null)
+                if (parsedInputModel.OutputRedirect != null)
                 {
-                    File.WriteAllText(outputRedirect, string.Empty);
+                    File.WriteAllText(parsedInputModel.OutputRedirect, string.Empty);
                 }
             }
             else
             {
                 // Append mode: create empty file only if it doesn't exist
-                if (errorRedirect != null && !File.Exists(errorRedirect))
+                if (parsedInputModel.ErrorRedirect != null && !File.Exists(parsedInputModel.ErrorRedirect))
                 {
-                    File.WriteAllText(errorRedirect, string.Empty);
+                    File.WriteAllText(parsedInputModel.ErrorRedirect, string.Empty);
                 }
-                if (outputRedirect != null && !File.Exists(outputRedirect))
+                if (parsedInputModel.ErrorRedirect != null && !File.Exists(parsedInputModel.ErrorRedirect))
                 {
-                    File.WriteAllText(outputRedirect, string.Empty);
+                    File.WriteAllText(parsedInputModel.ErrorRedirect, string.Empty);
                 }
             }
 
@@ -80,12 +54,12 @@ class Program
                 case EXIT:
                     return;
                 case ECHO:
-                    ToOutput(string.Join(SPACE, command), outputRedirect, isRedirectAppended);
+                    ToOutput(string.Join(SPACE, command), parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                     break;
                 case TYPE:
                     if (shellCommands.Contains(arguments))
                     {
-                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments), outputRedirect, isRedirectAppended);
+                        ToOutput(string.Format(SHELL_BUILTIN_TEMPLATE, arguments), parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                     }
                     else
                     {
@@ -94,16 +68,16 @@ class Program
                         if (typeFileInfo != null)
                         {
                             var fullPath = Path.Combine(typeFileInfo.Directory.FullName, typeFileInfo.Name);
-                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath), outputRedirect, isRedirectAppended);
+                            ToOutput(string.Format(FILE_LOCATION_TEMPLATE, arguments, fullPath), parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                         }
                         else
                         {
-                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments), errorRedirect, isRedirectAppended);
+                            ToOutput(string.Format(NOT_FOUND_TEMPLATE, arguments), parsedInputModel.ErrorRedirect, parsedInputModel.IsRedirectAppended);
                         }
                     }
                     break;
                 case PWD:
-                    ToOutput(shellCurrentDirectory, outputRedirect, isRedirectAppended);
+                    ToOutput(shellCurrentDirectory, parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                     break;
                 case CD:
                     var newPath = arguments;
@@ -124,7 +98,7 @@ class Program
                     
                     if (!exists)
                     {
-                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath), errorRedirect, isRedirectAppended);
+                        ToOutput(string.Format(CD_NO_SUCH_DIRECTORY_TEMPLATE, CD, newPath), parsedInputModel.ErrorRedirect, parsedInputModel.IsRedirectAppended);
                     } 
                     else
                     {
@@ -142,7 +116,7 @@ class Program
                             FileName = fileInfo.Name,
                             UseShellExecute = false,
                             RedirectStandardOutput = true,
-                            RedirectStandardError = errorRedirect != null, // redirect stderr if errorRedirect is set
+                            RedirectStandardError = parsedInputModel.ErrorRedirect != null, // redirect stderr if errorRedirect is set
                         };
 
                         foreach (var arg in command)
@@ -152,27 +126,27 @@ class Program
 
                         using Process process = Process.Start(startInfo)!;
                         string output = process.StandardOutput.ReadToEnd();
-                        string errorOutput = errorRedirect != null ? process.StandardError.ReadToEnd() : string.Empty;
+                        string errorOutput = parsedInputModel.ErrorRedirect != null ? process.StandardError.ReadToEnd() : string.Empty;
                         process.WaitForExit();
 
                         if (!string.IsNullOrEmpty(output))
                         {
                             // Remove trailing newline since ToOutput adds one
                             output = output.TrimEnd('\n', '\r');
-                            ToOutput(output, outputRedirect, isRedirectAppended);
+                            ToOutput(output, parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
                         }
 
                         if (!string.IsNullOrEmpty(errorOutput))
                         {
                             // Remove trailing newline since ToOutput adds one
                             errorOutput = errorOutput.TrimEnd('\n', '\r');
-                            ToOutput(errorOutput, errorRedirect, isRedirectAppended);
+                            ToOutput(errorOutput, parsedInputModel.ErrorRedirect, parsedInputModel.IsRedirectAppended);
                         }
 
                     }
                     else
                     {
-                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand), errorRedirect, isRedirectAppended);
+                        ToOutput(string.Format(COMMAND_NOT_FOUND_TEMPLATE, firstLevelCommand), parsedInputModel.ErrorRedirect, parsedInputModel.IsRedirectAppended);
                     }
                     break;
             }
