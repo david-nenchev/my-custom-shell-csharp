@@ -12,7 +12,7 @@ namespace codecrafters.helpers
         public const string PWD = "pwd";
         public const string CD = "cd";
         public static readonly string[] shellCommands = { EXIT, ECHO, TYPE, PWD };
-        public static readonly string[] outputOperators = { ">>", "1>", ">" };
+        public static readonly string[] outputOperators = { "1>>", ">>", "1>", ">" };
         public static readonly string[] erorOuputOperators = { "2>>" , "2>" };
 
     }
