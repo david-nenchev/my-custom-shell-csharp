@@ -78,7 +78,7 @@ class Program
                     break;
                 case PWD:
                     ToOutput(shellCurrentDirectory, parsedInputModel.OutputRedirect, parsedInputModel.IsRedirectAppended);
-                    break;
+                    break; 
                 case CD:
                     var newPath = arguments;
 
