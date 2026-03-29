@@ -14,7 +14,6 @@ class Program
         string? errorRedirect = null;
         var isRedirectAppended = false;
 
-
         while (true)
         {
             Console.Write(PROMPT);
