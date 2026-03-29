@@ -10,9 +10,6 @@ class Program
     {
         var shellCurrentDirectory = Directory.GetCurrentDirectory();
         var homeDirectory = GetEnvVariableValue(HOME_ENV_VAR);
-        string? outputRedirect = null;
-        string? errorRedirect = null;
-        var isRedirectAppended = false;
 
         while (true)
         {
@@ -20,6 +17,11 @@ class Program
 
             var consoleInput = Console.ReadLine()?.Trim();
             var (parsedInput, redirect, redirectOp) = ParseInput(consoleInput);
+
+            // Reset redirect variables for each command
+            string? outputRedirect = null;
+            string? errorRedirect = null;
+            bool isRedirectAppended = false;
 
             switch (redirectOp)
             {
