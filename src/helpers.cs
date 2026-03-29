@@ -57,25 +57,42 @@ namespace codecrafters.helpers
                         // Complete the first word (command)
                         var partialCommand = words.Length == 1 ? words[0] : currentInput;
                         bool foundMatch = false;
+                        string completedCommand = null;
 
+                        // First, check builtin commands
                         foreach (var command in ShellCommands.shellCommands)
                         {
                             if (command.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase))
                             {
-                                // Clear current line and write completed command
-                                Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
-                                sb.Clear();
-                                sb.Append(command);
-                                sb.Append(' '); // Add space to buffer
-                                Console.Write(command + ' '); // Write command with trailing space
+                                completedCommand = command;
                                 foundMatch = true;
                                 break;
                             }
                         }
 
-                        // Ring bell if no match found
+                        // If no builtin match, check external executables
                         if (!foundMatch)
                         {
+                            var matchingExecutables = FileHelpers.FindMatchingExecutables(partialCommand);
+                            if (matchingExecutables.Count > 0)
+                            {
+                                completedCommand = matchingExecutables[0]; // Use first match
+                                foundMatch = true;
+                            }
+                        }
+
+                        if (foundMatch && completedCommand != null)
+                        {
+                            // Clear current line and write completed command
+                            Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
+                            sb.Clear();
+                            sb.Append(completedCommand);
+                            sb.Append(' '); // Add space to buffer
+                            Console.Write(completedCommand + ' '); // Write command with trailing space
+                        }
+                        else
+                        {
+                            // Ring bell if no match found
                             Console.Write(StringHelpers.BELL);
                         }
                     }
@@ -279,6 +296,41 @@ namespace codecrafters.helpers
         public static string GetEnvVariableValue(string key)
         {
             return Environment.GetEnvironmentVariable(key);
+        }
+
+        public static List<string> FindMatchingExecutables(string partialName)
+        {
+            var matches = new List<string>();
+            var paths = GetEnvVariableValue(StringHelpers.PATH_ENV_VAR)?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+            if (paths == null) return matches;
+
+            foreach (var path in paths)
+            {
+                if (!Directory.Exists(path)) continue;
+
+                try
+                {
+                    var files = Directory.GetFiles(path);
+                    foreach (var file in files)
+                    {
+                        var fileName = Path.GetFileName(file);
+                        if (fileName.StartsWith(partialName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (CanExecute(file))
+                            {
+                                matches.Add(fileName);
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // Skip directories we can't access
+                }
+            }
+
+            return matches;
         }
     }
 }
