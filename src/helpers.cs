@@ -316,6 +316,7 @@ namespace codecrafters.helpers
         public static List<string> FindMatchingExecutables(string partialName)
         {
             var matches = new List<string>();
+            var seen = new HashSet<string>(); // Avoid duplicates
             var paths = GetEnvVariableValue(StringHelpers.PATH_ENV_VAR)?.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
 
             if (paths == null) return matches;
@@ -332,9 +333,11 @@ namespace codecrafters.helpers
                         var fileName = Path.GetFileName(file);
                         if (fileName.StartsWith(partialName, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (CanExecute(file))
+                            // For tab completion, just check if file exists (skip expensive CanExecute check)
+                            if (!seen.Contains(fileName))
                             {
                                 matches.Add(fileName);
+                                seen.Add(fileName);
                             }
                         }
                     }
