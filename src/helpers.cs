@@ -37,8 +37,7 @@ namespace codecrafters.helpers
             // normal messages can be loged in file or console
             if (outputRedirect != null)
             {
-                try
-                {
+                
                     // Write to file - add newline to match console behavior
                     if (isRedirectAppended)
                     {
@@ -48,11 +47,7 @@ namespace codecrafters.helpers
                     {
                         File.WriteAllText(outputRedirect, message + Environment.NewLine);
                     }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("No such file or directory");
-                }
+               
 
             }
             else
