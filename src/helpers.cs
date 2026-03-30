@@ -51,11 +51,10 @@ namespace codecrafters.helpers
                 }
                 else if (keyInfo.Key == ConsoleKey.Tab)
                 {
-                    // Tab completion for commands
+                    // Tab completion
                     var currentInput = sb.ToString().TrimStart(); // Trim leading spaces
                     var words = currentInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    // Only complete if we're on the first word (command)
                     if (words.Length == 0 || words.Length == 1)
                     {
                         // Complete the first word (command)
@@ -133,6 +132,74 @@ namespace codecrafters.helpers
                                     Console.WriteLine(); // Move to new line
                                     allMatches.Sort(); // Alphabetical order
                                     Console.WriteLine(string.Join("  ", allMatches)); // Two spaces between items
+                                    Console.Write(StringHelpers.PROMPT + currentInput); // Redisplay prompt with input
+                                }
+                                else
+                                {
+                                    // First tab with no further completion: ring bell
+                                    Console.Write(StringHelpers.BELL);
+                                    lastTabInput = currentInput;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // No matches: ring bell
+                            Console.Write(StringHelpers.BELL);
+                        }
+                    }
+                    else
+                    {
+                        // Filename completion (for arguments)
+                        // Find the last word (partial filename)
+                        var lastSpaceIndex = currentInput.LastIndexOf(' ');
+                        var partialFilename = lastSpaceIndex >= 0 ? currentInput.Substring(lastSpaceIndex + 1) : currentInput;
+                        var prefix = lastSpaceIndex >= 0 ? currentInput.Substring(0, lastSpaceIndex + 1) : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(partialFilename))
+                        {
+                            Console.Write(StringHelpers.BELL);
+                            lastKey = ConsoleKey.Tab;
+                            continue;
+                        }
+
+                        // Find matching files in current directory
+                        var matchingFiles = FileHelpers.FindMatchingFilesInCurrentDirectory(partialFilename);
+
+                        if (matchingFiles.Count == 1)
+                        {
+                            // Single match: complete it with trailing space
+                            var completedFilename = matchingFiles[0];
+                            var newInput = prefix + completedFilename + ' ';
+                            Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
+                            sb.Clear();
+                            sb.Append(newInput);
+                            Console.Write(newInput);
+                        }
+                        else if (matchingFiles.Count > 1)
+                        {
+                            // Multiple matches: complete to longest common prefix
+                            var commonPrefix = GetLongestCommonPrefix(matchingFiles);
+
+                            if (commonPrefix.Length > partialFilename.Length)
+                            {
+                                // There is a longer common prefix: complete to it (no trailing space)
+                                var newInput = prefix + commonPrefix;
+                                Console.Write("\r" + StringHelpers.PROMPT + new string(' ', sb.Length) + "\r" + StringHelpers.PROMPT);
+                                sb.Clear();
+                                sb.Append(newInput);
+                                Console.Write(newInput);
+                                lastTabInput = newInput;
+                            }
+                            else
+                            {
+                                // No further completion possible
+                                if (lastKey == ConsoleKey.Tab && lastTabInput == currentInput)
+                                {
+                                    // Second consecutive tab: show all matches
+                                    Console.WriteLine(); // Move to new line
+                                    matchingFiles.Sort(); // Alphabetical order
+                                    Console.WriteLine(string.Join("  ", matchingFiles)); // Two spaces between items
                                     Console.Write(StringHelpers.PROMPT + currentInput); // Redisplay prompt with input
                                 }
                                 else
@@ -414,6 +481,32 @@ namespace codecrafters.helpers
                 {
                     // Skip directories we can't access
                 }
+            }
+
+            return matches;
+        }
+
+        public static List<string> FindMatchingFilesInCurrentDirectory(string partialName)
+        {
+            var matches = new List<string>();
+
+            try
+            {
+                var currentDir = Directory.GetCurrentDirectory();
+                var files = Directory.GetFiles(currentDir);
+
+                foreach (var file in files)
+                {
+                    var fileName = Path.GetFileName(file);
+                    if (fileName.StartsWith(partialName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        matches.Add(fileName);
+                    }
+                }
+            }
+            catch
+            {
+                // If there's an error reading directory, return empty list
             }
 
             return matches;
